@@ -9,11 +9,33 @@ using namespace std;
 #include<SDL3_ttf/SDL_ttf.h>
 #include "Header.h"
 
+
 Game::Game(string P1Name, string P2Name) {
     Turn = 0;
     Player* P1 = new Player(P1Name); 
     Player* P2 = new Player(P2Name);
 
+}
+Square::Square() {
+    Contains=nullptr;
+
+}
+Unit* Square::GetContents() {
+    return Contains;
+}
+Map::Map(int x,int y){
+    vector<Square>Temp;
+    for (int Y = 0; Y < y; Y++) {
+        Temp.empty();
+        for (int X = 0; X< x; X++) {
+            Temp.emplace_back();
+        }
+        Grid.push_back(Temp);
+    };
+    Grid[3][3].Contains = new Unit("Name",10);
+}
+Unit* Map::GetContentsOfGrid(int X, int Y) {
+    return Grid[Y][X].GetContents();
 }
 Player::Player(string Name) {
     this->Name = Name;
@@ -22,10 +44,12 @@ Unit::Unit(string Name, int Health) {
     this->Name = Name;
     this->Health = Health;
 }
+string Unit::GetName() {
+    return Name;
+}
 struct OptionBoxes {
     int x; int y; int h; int w;
 };
-
 struct SDL_App {
     SDL_Window* window{ nullptr };
     SDL_Renderer* renderer{ nullptr };
@@ -33,19 +57,15 @@ struct SDL_App {
     bool IsRunning = true;
     bool GameStart = false;
 };
-struct Grid {
-    int Height = 20;
-    int Width = 16;
-    int SQUARE_SIZE = 40;
-};
 
 TTF_Font* font; TTF_Font* TitleFont;
 SDL_App App;
 Grid MainGrid;
+Map GameMap(MainGrid.Width, MainGrid.Height);
 const int TITLE_WINDOW_HEIGHT = 800;
 const int TITLE_WINDOW_WIDTH = 1200;
-const int WINDOW_HEIGHT = 1200;
-const int WINDOW_WIDTH = 1800;
+const int WINDOW_HEIGHT = 1400;
+const int WINDOW_WIDTH = 2200;
 int TITLEFONT_SIZE=80;
 int FONT_SIZE = 30;
 vector<OptionBoxes> OptionPos;
@@ -102,6 +122,14 @@ void DrawGrid() {
         for (int x = 0; x < MainGrid.Width; x+=2) {
             GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
             SDL_RenderFillRect(App.renderer, &GridSquare);
+            if (GameMap.GetContentsOfGrid(x, y) == NULL) {
+                SDL_Log("Square empty");
+            }
+            else {
+                SDL_Log(" SQaure contains unit : %d " ,GameMap.GetContentsOfGrid(x, y)->GetName());
+            }
+
+            
         }
     }
     for (int y = 1; y < MainGrid.Height; y += 2) {
@@ -232,6 +260,7 @@ void CheckIfOptionsClicked(int X,int Y) {
 
 int main()
 {
+    SDL_Log("Running");
    
     if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == 0) {
         return -1;

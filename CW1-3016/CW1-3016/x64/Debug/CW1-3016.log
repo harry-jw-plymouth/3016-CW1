@@ -1,48 +1,49 @@
 ﻿  CW1-3016.cpp
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(60,77): warning C4838: conversion from 'unsigned __int64' to 'float' requires a narrowing conversion
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(60,77): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(67,73): warning C4838: conversion from 'unsigned __int64' to 'float' requires a narrowing conversion
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(67,73): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(54,21): warning C4101: 'dstrect': unreferenced local variable
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(74,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(74,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(76,40): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(76,69): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(76,90): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(78,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(78,68): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(80,21): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(80,66): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(80,86): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(95,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(95,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(95,89): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(95,149): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(98,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(98,65): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(101,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(103,39): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(108,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(110,39): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(173,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(173,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(173,78): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(173,126): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(174,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(174,51): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(174,76): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(174,101): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(180,49): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(181,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(182,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(183,46): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(185,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(185,55): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(185,80): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(185,105): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(191,15): warning C4101: 'OptionSquare': unreferenced local variable
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(246,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(251,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(312,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(312,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(29,19): warning C4858: discarding return value: This member function returns a bool indicating whether the container is empty and has no other effects. It is not useful to call this member function and discard the return value. Use the 'clear()' member function if you want to erase all elements.
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(80,77): warning C4838: conversion from 'unsigned __int64' to 'float' requires a narrowing conversion
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(80,77): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(87,73): warning C4838: conversion from 'unsigned __int64' to 'float' requires a narrowing conversion
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(87,73): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(74,21): warning C4101: 'dstrect': unreferenced local variable
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(94,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(94,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(96,40): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(96,69): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(96,90): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(98,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(98,68): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(100,21): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(100,66): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(100,86): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(115,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(115,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(115,89): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(115,149): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(118,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(118,65): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(121,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(123,39): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(136,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(138,39): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(201,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(201,47): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(201,78): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(201,126): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(202,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(202,51): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(202,76): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(202,101): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(208,49): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(209,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(210,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(211,46): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(213,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(213,55): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(213,80): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(213,105): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(219,15): warning C4101: 'OptionSquare': unreferenced local variable
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(275,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(280,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(341,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(341,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   CW1-3016.vcxproj -> C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\x64\Debug\CW1-3016.exe
