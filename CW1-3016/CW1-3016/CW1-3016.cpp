@@ -16,36 +16,77 @@ Game::Game(string P1Name, string P2Name) {
     Player* P2 = new Player(P2Name);
 
 }
+const int WINDOW_HEIGHT = 1400;
+const int WINDOW_WIDTH = 2200;
+Grid MainGrid;
 Square::Square() {
     Contains=nullptr;
 
 }
+void Square::SetContents(Unit* NewContents) {
+    Contains = NewContents;
+}
+
 Unit* Square::GetContents() {
     return Contains;
 }
+
 Map::Map(int x,int y){
     vector<Square>Temp;
     for (int Y = 0; Y < y; Y++) {
-        Temp.empty();
+        Temp.clear();
         for (int X = 0; X< x; X++) {
             Temp.emplace_back();
         }
         Grid.push_back(Temp);
     };
-    Grid[3][3].Contains = new Unit("Name",10);
+    Grid[3][3].SetContents(new Unit("Name", 10,1));
+    Grid[3][3].GetContents()->UpdatePosition(3, 3);
+    Grid[3][20].SetContents(new Unit("Name", 10, 0));
+    Grid[3][20].GetContents()->UpdatePosition(3, 20);
+    AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[3][20].GetContents());
+    cout << Grid[3][3].GetContents();
+    if (Grid[3][3].GetContents() != nullptr) {
+        SDL_Log("Grid set correctly");
+    }
 }
 Unit* Map::GetContentsOfGrid(int X, int Y) {
     return Grid[Y][X].GetContents();
 }
+Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
+    int GridStartX = (WINDOW_WIDTH - (MainGrid.Width * MainGrid.SQUARE_SIZE)) / 2; int GridStartY = (WINDOW_HEIGHT - ((MainGrid.Height * MainGrid.SQUARE_SIZE))) / 2;
+    for (int i = 0; i < UnitsInGrid.size(); i++) {
+        if (UnitsInGrid[i].GetXPos() * MainGrid.SQUARE_SIZE + GridStartX<MouseX && (UnitsInGrid[i].GetXPos() + 1) * MainGrid.SQUARE_SIZE + GridStartX > MouseX) {
+            return UnitsInGrid[i];
+        }
+    }
+    return Unit("EMPTY",0,0);
+}
+void Map::AddUnitToGrid(Unit* Unit) {
+    UnitsInGrid.push_back(*Unit);
+}
 Player::Player(string Name) {
     this->Name = Name;
 }
-Unit::Unit(string Name, int Health) {
+Unit::Unit(string Name, int Health,int Team) {
     this->Name = Name;
     this->Health = Health;
+    this->Team = Team;
+}
+void Unit::UpdatePosition(int x, int y) {
+    XPos = x; YPos = y;
 }
 string Unit::GetName() {
     return Name;
+}
+int Unit::GetTeam() {
+    return Team;
+}
+int Unit::GetYPos() {
+    return YPos;
+}
+int Unit::GetXPos() {
+    return XPos;
 }
 struct OptionBoxes {
     int x; int y; int h; int w;
@@ -60,12 +101,10 @@ struct SDL_App {
 
 TTF_Font* font; TTF_Font* TitleFont;
 SDL_App App;
-Grid MainGrid;
 Map GameMap(MainGrid.Width, MainGrid.Height);
 const int TITLE_WINDOW_HEIGHT = 800;
 const int TITLE_WINDOW_WIDTH = 1200;
-const int WINDOW_HEIGHT = 1400;
-const int WINDOW_WIDTH = 2200;
+
 int TITLEFONT_SIZE=80;
 int FONT_SIZE = 30;
 vector<OptionBoxes> OptionPos;
@@ -111,34 +150,88 @@ void DrawTitleScreen() {
 void DrawGrid() {
     int GridStartX = (WINDOW_WIDTH - (MainGrid.Width * MainGrid.SQUARE_SIZE)) / 2; int GridStartY = (WINDOW_HEIGHT - ((MainGrid.Height * MainGrid.SQUARE_SIZE))) / 2;
     SDL_SetRenderDrawColor(App.renderer, 120, 230, 180, 255);
-    SDL_FRect BackGround,GridSquare;
+    SDL_FRect BackGround, GridSquare;
     BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = MainGrid.Width * MainGrid.SQUARE_SIZE; BackGround.h = MainGrid.SQUARE_SIZE * MainGrid.Height;
     SDL_RenderFillRect(App.renderer, &BackGround);
 
+    bool LastWasSquare=false, LastRowStartedWithSquare=false;
     GridSquare.h = MainGrid.SQUARE_SIZE; GridSquare.w = MainGrid.SQUARE_SIZE;
     SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
-    for (int y = 0; y < MainGrid.Height; y+=2) {
+    for (int y = 0; y < MainGrid.Height; y++) {
         GridSquare.y = GridStartY + (y * MainGrid.SQUARE_SIZE);
-        for (int x = 0; x < MainGrid.Width; x+=2) {
-            GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
-            SDL_RenderFillRect(App.renderer, &GridSquare);
-            if (GameMap.GetContentsOfGrid(x, y) == NULL) {
-                SDL_Log("Square empty");
+        LastWasSquare = true;
+        if (!LastRowStartedWithSquare) {
+            LastWasSquare = false;
+        }
+        for (int x = 0; x < MainGrid.Width; x ++){
+            if (!LastWasSquare) {
+                GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
+                SDL_RenderFillRect(App.renderer, &GridSquare);
+                LastWasSquare = true;
             }
             else {
-                SDL_Log(" SQaure contains unit : %d " ,GameMap.GetContentsOfGrid(x, y)->GetName());
+                LastWasSquare = false;
             }
+            if (GameMap.GetContentsOfGrid(x,y)!=NULL ) {
+                if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
+                    SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                }
+                else {
+                    SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
 
+                }
+                SDL_RenderFillRect(App.renderer, &GridSquare);
+                SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+
+
+            }
+        }
+        if (LastRowStartedWithSquare) {
+            LastRowStartedWithSquare = false;
+        }
+        else {
+            LastRowStartedWithSquare = true;
+        }
+        
+
+    }
+
+  //  GridSquare.h = MainGrid.SQUARE_SIZE; GridSquare.w = MainGrid.SQUARE_SIZE;
+   // SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+    //for (int y = 0; y < MainGrid.Height; y+=2) {
+      //  GridSquare.y = GridStartY + (y * MainGrid.SQUARE_SIZE);
+        //for (int x = 0; x < MainGrid.Width; x+=2) {
+          //  GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
+           // SDL_RenderFillRect(App.renderer, &GridSquare);
+            //cout<<GameMap.GetContentsOfGrid(x, y);
+           // if (GameMap.GetContentsOfGrid(x, y) == NULL) {
+                // SDL_Log("Square empty");
+           // }
+           // else {
+             //   SDL_Log(" SQaure contains unit :");
+            //}
             
-        }
-    }
-    for (int y = 1; y < MainGrid.Height; y += 2) {
-        GridSquare.y = GridStartY + (y * MainGrid.SQUARE_SIZE);
-        for (int x = 1; x < MainGrid.Width; x += 2) {
-            GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
-            SDL_RenderFillRect(App.renderer, &GridSquare);
-        }
-    }
+      //  }
+    //}
+    //for (int y = 1; y < MainGrid.Height; y += 2) {
+      //  GridSquare.y = GridStartY + (y * MainGrid.SQUARE_SIZE);
+        //for (int x = 1; x < MainGrid.Width; x += 2) {
+          //  GridSquare.x = GridStartX + (x * MainGrid.SQUARE_SIZE);
+            //SDL_RenderFillRect(App.renderer, &GridSquare);
+         //   if (GameMap.GetContentsOfGrid(x, y) == NULL) {
+                // SDL_Log("Square empty");
+          //  }
+            //else {
+             //   SDL_Log(" SQaure contains unit :");
+               // SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
+
+                //SDL_RenderFillRect(App.renderer, &GridSquare);
+
+                //SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+
+//            }
+  //      }
+//    }
 
 }
 void DrawGameScreenTemp() {
@@ -360,10 +453,41 @@ int main()
     }
 
     CreateGame();
+    Unit Temp=Unit("",0,0);
     if (App.GameStart) {
         App.IsRunning = true;
         while (App.IsRunning)
         {
+            while (SDL_PollEvent(&App.event)) {
+                switch (App.event.type) {
+                case SDL_EVENT_QUIT:
+                    App.IsRunning = false;
+                    break;
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                    MouseX = App.event.button.x; MouseY = App.event.button.y;
+                    SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
+                    Temp= GameMap.GetIfUnitClicked(MouseX, MouseY);
+                    if (Temp.GetName() != "EMPTY") {
+                        SDL_Log("Clicked unit!");
+                    }
+
+                    break;
+                case SDL_EVENT_KEY_DOWN:
+                    switch (App.event.key.key)
+                    {
+                    case SDLK_ESCAPE:
+                        App.IsRunning = false;
+                        break;
+
+
+                    default:
+                        break;
+                    }
+
+                }
+
+            }
+
             SDL_RenderClear(App.renderer);
             DrawGameScreenTemp();
             SDL_RenderPresent(App.renderer);

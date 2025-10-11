@@ -10,20 +10,27 @@ struct Grid {
 	int Width = 24;
 	int SQUARE_SIZE = 40;
 };
-
 class Unit {
 public:
-	Unit(string Name, int Health);
+	Unit(string Name, int Health,int Team);
 	string GetName();
+	int GetTeam();
+	void UpdatePosition(int x, int y);
+	int GetXPos();
+	int GetYPos();
 private:
 	string Name;
 	int Health;
+	int Team;
+	int XPos;
+	int YPos;
 };
 
 class Square {
 public:
 	Square();
 	Unit* GetContents();
+	void SetContents(Unit* NewContents);
 	Unit* Contains;
 
 
@@ -34,8 +41,12 @@ class Map {
 public:
 	Map(int x, int y);
 	Unit* GetContentsOfGrid(int X, int Y);
+	void AddUnitToGrid(Unit* Unit);
+	Unit GetIfUnitClicked(int MouseX,int MouseY);
+
 private:
 	vector<vector<Square>>Grid;
+	vector<Unit> UnitsInGrid;
 };
 
 class Game {
