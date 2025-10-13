@@ -12,15 +12,19 @@ struct Grid {
 };
 class Unit {
 public:
-	Unit(string Name, int Health,int Team);
+	Unit(string Name, int Health,int Team,int Speed);
 	string GetName();
 	int GetTeam();
 	void UpdatePosition(int x, int y);
 	int GetXPos();
 	int GetYPos();
+	void CalculateCurrentMoves();
+	vector<vector<int>> GetCurrentMoves();
 private:
+	vector<vector<int>> CurrentMoves;
 	string Name;
 	int Health;
+	int Speed;
 	int Team;
 	int XPos;
 	int YPos;
@@ -49,17 +53,26 @@ private:
 	vector<Unit> UnitsInGrid;
 };
 
+class Player {
+public:
+	Player(string Name,int PlayerId);
+	int GetPlayerId();
+private:
+	string Name;
+	int PlayerId;
+
+};
+
 class Game {
 public:
 	Game(string P1Name,string P2Name);
+	Player* GetCurrentPlayer();
+	Unit* GetCurrentlySelected();
+	void SetCurrentlySelected(Unit* Selected);
 private:
+	Unit* CurrentlySelected;
 	int Turn;
+	Player* P1;
 };
-class Player {
-public:
-	Player(string Name);
-private:
-	string Name;
 
-};
 
