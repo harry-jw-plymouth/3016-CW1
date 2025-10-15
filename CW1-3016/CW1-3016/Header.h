@@ -5,11 +5,6 @@
 using namespace std;
 #include <SDL3/SDL.h>
 
-struct Grid {
-	int Height = 24;
-	int Width = 24;
-	int SQUARE_SIZE = 40;
-};
 class Unit {
 public:
 	Unit(string Name, int Health,int Team,int Speed);
@@ -46,11 +41,19 @@ public:
 	Map(int x, int y);
 	Unit* GetContentsOfGrid(int X, int Y);
 	void AddUnitToGrid(Unit* Unit);
+	void MoveUnit(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
 	Unit GetIfUnitClicked(int MouseX,int MouseY);
+	int GetHeight();
+	int GetWidth();
+	void AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
+	void AdjustUnits(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
 
 private:
 	vector<vector<Square>>Grid;
+	int Width;
+	int Height;
 	vector<Unit> UnitsInGrid;
+
 };
 
 class Player {
@@ -69,10 +72,13 @@ public:
 	Player* GetCurrentPlayer();
 	Unit* GetCurrentlySelected();
 	void SetCurrentlySelected(Unit* Selected);
+	vector<int> GetCurrentlySelectedPos();
 private:
 	Unit* CurrentlySelected;
 	int Turn;
 	Player* P1;
+	int CurrentlySelectedX;
+	int CurrentlySelectedY;
 };
 
 
