@@ -9,7 +9,26 @@ using namespace std;
 #include<SDL3_ttf/SDL_ttf.h>
 #include "Header.h"
 
+Weapon::Weapon(string Name,int Range, int Strength) {
+    this->Name = Name;
+    this->Range = Range;
+    this->Strength = Strength;
+}
+string Weapon::GetName() {
+    return Name;
+}
+int Weapon::GetStrength() {
+    return Strength;
+}
+int Weapon::GetRange() {
+    return Range;
+}
+Sword::Sword(string Name, int Range, int Strength) :Weapon(Name, Range, Strength) {
 
+}
+
+
+vector<Weapon> Weapons;
 
 Player::Player(string Name,int PlayerId) {
     this->Name = Name;
@@ -106,11 +125,13 @@ void Map::MoveUnit(vector<int>NewPos,vector<int>OldPos,Unit* UnitToMove) {
 void Map::AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove) {
     Grid[NewPos[0]][NewPos[1]].SetContents(UnitToMove);
     Grid[NewPos[0]][NewPos[1]].GetContents()->UpdatePosition(NewPos[0],NewPos[1]);
+    Grid[NewPos[0]][NewPos[1]].GetContents()->SetUsed(true);
     Grid[OldPos[0]][OldPos[1]].SetContents(NULL);
 }
 void Map::AdjustUnits(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove) {
     for (int i = 0; i < UnitsInGrid.size(); i++) {
         if (UnitsInGrid[i].GetXPos() == OldPos[0] && UnitsInGrid[i].GetYPos() == OldPos[1]) {
+            UnitsInGrid[i].SetUsed(true);
             UnitsInGrid[i].UpdatePosition(NewPos[0], NewPos[1]);
             break;
         }
@@ -154,9 +175,22 @@ Unit::Unit(string Name, int Health,int Team,int Speed) {
     this->Health = Health;
     this->Team = Team;
     this->Speed = Speed;
+    UsedThisTurn = false;
+}
+void Unit::SetWeapon(Weapon weapon) {
+    EquippedWeapon = &weapon;
+}
+Weapon* Unit::GetWeapon() {
+    return EquippedWeapon;
 }
 void Unit::UpdatePosition(int x, int y) {
     XPos = x; YPos = y;
+}
+bool Unit::GetIfUsedThisTurn() {
+    return UsedThisTurn;
+}
+void Unit::SetUsed(bool Status) {
+    this->UsedThisTurn = Status;
 }
 string Unit::GetName() {
     return Name;
@@ -302,7 +336,13 @@ void DrawGridWithMoveOptions() {
             if (GameMap.GetContentsOfGrid(x, y) != NULL) {
                 GridSquare.x = GridStartX + (x * SquareSize);
                 if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
-                    SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                        SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                    }
+                    else {
+                        SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    }
+                    
                 }
                 else {
                     SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
@@ -320,8 +360,6 @@ void DrawGridWithMoveOptions() {
         else {
             LastRowStartedWithSquare = true;
         }
-
-
     }
 
 }
@@ -353,7 +391,12 @@ void DrawGrid() {
             if (GameMap.GetContentsOfGrid(x,y)!=NULL ) {
                 GridSquare.x = GridStartX + (x * SquareSize);
                 if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
-                    SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                        SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                    }
+                    else {
+                        SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    }   
                 }
                 else {
                     SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
@@ -486,6 +529,11 @@ bool CreateApp() {
 
     return true;
 }
+void CreateWeapons() {
+//    Weapons.emplace_back(new Sword("Iron Sword", 1, 5));
+ //   Weapons.emplace_back(new Sword("Power sword", 1, 7));
+
+}
 bool CreateGame() {
     if ((App.window = SDL_CreateWindow("GameScreen",WINDOW_WIDTH, WINDOW_HEIGHT, 0)) == nullptr) {
         SDL_Quit();
@@ -497,6 +545,7 @@ bool CreateGame() {
     }
     if ((App.renderer = SDL_CreateRenderer(App.window, nullptr)) == nullptr) {
     }
+    CreateWeapons();
 
     return true;
 }
@@ -570,6 +619,7 @@ void CheckIfOptionsClicked(int X,int Y) {
     }
 
 }
+
 
 
 int main()
@@ -690,19 +740,20 @@ int main()
                     SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
                     if (GameInProgress->GetCurrentlySelected() != nullptr) {
                         vector<int> Move=CheckIfMoveOptionClicked(MouseX, MouseY);
-                        if (Move[0] != -1) {
+                        if (Move[0] != -1 ) {
                             GameInProgress->GetCurrentlySelected()->UpdatePosition(Move[0], Move[1]);
-                            
+                            GameInProgress->GetCurrentlySelected()->SetUsed(true);
                             GameMap.MoveUnit(Move, GameInProgress->GetCurrentlySelectedPos(), GameInProgress->GetCurrentlySelected());
                             
+
                             GameInProgress->SetCurrentlySelected(nullptr);
                         }
                     }
                     else {
                         Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
-                        if (Temp.GetName() != "EMPTY") {
+                        if (Temp.GetName() != "EMPTY" ) {
                             SDL_Log("Clicked unit!");
-                            if (Temp.GetTeam() == GameInProgress->GetCurrentPlayer()->GetPlayerId()) {
+                            if (Temp.GetTeam() == GameInProgress->GetCurrentPlayer()->GetPlayerId() && !Temp.GetIfUsedThisTurn()) {
                                 SDL_Log("Player Clicked their Unit");
                                 Temp.CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(&Temp);

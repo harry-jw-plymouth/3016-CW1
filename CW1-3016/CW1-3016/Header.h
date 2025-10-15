@@ -5,6 +5,23 @@
 using namespace std;
 #include <SDL3/SDL.h>
 
+class Weapon {
+public :
+	Weapon(string Name,int Range, int Strength);
+	string GetName();
+	int GetRange();
+	int GetStrength();
+private:
+	string Name;
+	int Range;
+	int Strength;
+
+};
+
+class Sword:Weapon {
+public:
+	Sword(string Name, int Range, int Strength) ;
+};
 class Unit {
 public:
 	Unit(string Name, int Health,int Team,int Speed);
@@ -15,7 +32,13 @@ public:
 	int GetYPos();
 	void CalculateCurrentMoves();
 	vector<vector<int>> GetCurrentMoves();
+	bool GetIfUsedThisTurn();
+	void SetUsed(bool Status);
+	void SetWeapon(Weapon weapon);
+	Weapon* GetWeapon();
 private:
+	Weapon* EquippedWeapon;
+	bool UsedThisTurn;
 	vector<vector<int>> CurrentMoves;
 	string Name;
 	int Health;
