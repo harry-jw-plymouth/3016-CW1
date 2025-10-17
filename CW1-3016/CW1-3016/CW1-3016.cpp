@@ -8,6 +8,7 @@ using namespace std;
 #include <SDL3/SDL.h>
 #include<SDL3_ttf/SDL_ttf.h>
 #include "Header.h"
+#include <SDL_image.h>
 
 Weapon::Weapon(string Name,int Range, int Strength) {
     this->Name = Name;
@@ -76,7 +77,7 @@ void Square::SetContents(Unit* NewContents) {
 Unit* Square::GetContents() {
     return Contains;
 } 
-
+bool UpdateNeeded = true;
 Map::Map(int x,int y){
     vector<Square>Temp;
     for (int Y = 0; Y < y; Y++) {
@@ -370,6 +371,16 @@ void DrawGrid() {
     BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize; BackGround.h = SquareSize * GameMap.GetHeight();
     SDL_RenderFillRect(App.renderer, &BackGround);
 
+   // SDL_Surface* Sprites;
+
+    string Path = std::string(SDL_GetBasePath()) + "assets/BlueSwordUnit.png";
+
+    SDL_Texture* SpriteTexture = IMG_LoadTexture(App.renderer, Path.c_str());
+    if (!SpriteTexture) {
+        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+    }
+    bool SpriteDrawn = false;
+   // SDL_DestroySurface(Sprites);
     bool LastWasSquare=false, LastRowStartedWithSquare=false;
     GridSquare.h = SquareSize; GridSquare.w = SquareSize;
     SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
@@ -395,14 +406,19 @@ void DrawGrid() {
                         SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
                     }
                     else {
-                        SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                        SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+                      //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                        SpriteDrawn = true;
                     }   
                 }
                 else {
                     SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
 
                 }
-                SDL_RenderFillRect(App.renderer, &GridSquare);
+                if(!SpriteDrawn){
+                    SDL_RenderFillRect(App.renderer, &GridSquare);
+                }
+                SpriteDrawn = false;
                 SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
 
 
@@ -624,6 +640,8 @@ void CheckIfOptionsClicked(int X,int Y) {
 
 int main()
 {
+    SDL_Log("Using SDL version %d.%d.%d", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_MICRO_VERSION);
+    SDL_Log("Using SDL_image version %d.%d.%d", SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_MICRO_VERSION);
     SDL_Log("Running");
    
     if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == 0) {
@@ -747,6 +765,7 @@ int main()
                             
 
                             GameInProgress->SetCurrentlySelected(nullptr);
+                            UpdateNeeded = true;
                         }
                     }
                     else {
@@ -757,6 +776,7 @@ int main()
                                 SDL_Log("Player Clicked their Unit");
                                 Temp.CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(&Temp);
+                                UpdateNeeded = true;
 
 
                             }
@@ -782,8 +802,13 @@ int main()
             }
 
             SDL_RenderClear(App.renderer);
-            DrawGameScreenTemp();
-            SDL_RenderPresent(App.renderer);
+            if (UpdateNeeded) {
+                DrawGameScreenTemp();
+                SDL_RenderPresent(App.renderer);
+                UpdateNeeded = false;
+            }
+       
+           
             SDL_Delay(10);
         }
       

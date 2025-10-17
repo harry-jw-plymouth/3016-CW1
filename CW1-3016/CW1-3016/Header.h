@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+#include <SDL_image.h>
 #include <SDL3/SDL.h>
 
 class Weapon {
