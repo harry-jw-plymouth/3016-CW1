@@ -73,6 +73,8 @@ public:
 	int GetWidth();
 	void AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
 	void AdjustUnits(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
+	bool GetIfAllPlayersUnitsUsedThisTurn(int PlayerID);
+	void SetAllUnitsToUnactivated();
 
 private:
 	vector<vector<Square>>Grid;
@@ -95,14 +97,19 @@ private:
 class Game {
 public:
 	Game(string P1Name,string P2Name);
-	Player* GetCurrentPlayer();
+	int GetCurrentPlayer();
 	Unit* GetCurrentlySelected();
 	void SetCurrentlySelected(Unit* Selected);
 	vector<int> GetCurrentlySelectedPos();
+	bool GetIfAllUnitsActivatedThisTurn(vector<Unit> Units);
+	void UpdateTurn();
+	void SwapPlayers();
 private:
 	Unit* CurrentlySelected;
 	int Turn;
 	Player* P1;
+	Player* P2;
+	int CurrentPlayer;
 	int CurrentlySelectedX;
 	int CurrentlySelectedY;
 };

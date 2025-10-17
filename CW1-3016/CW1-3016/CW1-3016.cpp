@@ -41,12 +41,13 @@ int Player::GetPlayerId() {
 Game::Game(string P1Name, string P2Name) {
     Turn = 0;
     P1 = new Player(P1Name,0); 
-    Player* P2 = new Player(P2Name,1);
+    P2 = new Player(P2Name,1);
+    int CurrentPlayer = P1->GetPlayerId();
 
 }
 int SquareSize = 40;
-Player* Game::GetCurrentPlayer() {
-    return P1;
+int Game::GetCurrentPlayer() {
+    return CurrentPlayer;
 }
 Unit* Game::GetCurrentlySelected() {
     return CurrentlySelected;
@@ -63,6 +64,29 @@ void Game::SetCurrentlySelected(Unit* Selected) {
 vector<int> Game::GetCurrentlySelectedPos() {
     return{ CurrentlySelectedX,CurrentlySelectedY };
 }
+void Game::SwapPlayers() {
+    if (CurrentPlayer == P1->GetPlayerId()) {
+        CurrentPlayer = P2->GetPlayerId();
+        SDL_Log("Current player is now player 2");
+    }
+    else {
+        CurrentPlayer = P1->GetPlayerId();
+        SDL_Log("Current player is now player 1");
+    }
+}
+bool Game::GetIfAllUnitsActivatedThisTurn(vector<Unit> Units) {
+    for (int i = 0; i < Units.size(); i++) {
+        if (!Units[i].GetIfUsedThisTurn()) {
+            return false;
+        }
+    }
+    return true;
+}
+void Game::UpdateTurn() {
+    Turn++;
+    cout << "\n Turn " << Turn << "\n";
+}
+
 const int WINDOW_HEIGHT = 1400;
 const int WINDOW_WIDTH = 2200;
 //Grid MainGrid;
@@ -101,7 +125,7 @@ Map::Map(int x,int y){
     Grid[10][2].GetContents()->UpdatePosition(10, 2);
     AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
     AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
-    cout << Grid[3][3].GetContents();
+//    cout << Grid[3][3].GetContents();
     if (Grid[3][3].GetContents() != nullptr) {
       //  SDL_Log("Grid set correctly\n");
        // cout << "XPOS:" << Grid[3][3].GetContents()->GetXPos() << "\nYPOS:" << Grid[3][3].GetContents()->GetYPos();
@@ -150,7 +174,7 @@ Unit* Map::GetContentsOfGrid(int X, int Y) {
     return Grid[X][Y].GetContents();
 }
 Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
-    cout << "Size:" << UnitsInGrid.size();
+//    cout << "Size:" << UnitsInGrid.size();
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
     for (int i = 0; i < UnitsInGrid.size(); i++) {
        // cout << i << ":" << UnitsInGrid[i].GetXPos()<< ","<<UnitsInGrid[i].GetYPos() << "\n";
@@ -159,7 +183,7 @@ Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
          //   SDL_Log("Column contains Unit!");
             if (UnitsInGrid[i].GetYPos() * SquareSize + GridStartY<MouseY && (UnitsInGrid[i].GetYPos() + 1) * SquareSize + GridStartY > MouseY) {
            //     SDL_Log("Row containd unit");
-                cout << "Unit clicked:" << UnitsInGrid[i].GetName();
+           //     cout << "Unit clicked:" << UnitsInGrid[i].GetName();
                 return UnitsInGrid[i];
             }
            
@@ -169,6 +193,26 @@ Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
 }
 void Map::AddUnitToGrid(Unit* Unit) {
     UnitsInGrid.push_back(*Unit);
+}
+bool Map::GetIfAllPlayersUnitsUsedThisTurn(int PlayerID) {
+    for (int i = 0; i < UnitsInGrid.size(); i++) {
+        if (UnitsInGrid[i].GetTeam() == PlayerID && !UnitsInGrid[i].GetIfUsedThisTurn()) {
+            return false;
+        }
+    }
+    return true;
+}
+void Map::SetAllUnitsToUnactivated() {
+    for (int i = 0; i < UnitsInGrid.size(); i++) {
+        UnitsInGrid[i].SetUsed(false);
+    }
+    for (int y = 0; y < Height; y++) {
+        for (int x = 0; x < Width; x++) {
+            if (Grid[x][y].GetContents() != NULL) {
+                Grid[x][y].GetContents()->SetUsed(false);
+            }
+        }
+    }
 }
 
 Unit::Unit(string Name, int Health,int Team,int Speed, string Path) {
@@ -227,18 +271,18 @@ void Unit::CalculateCurrentMoves() {
             else {
                 YDifferance = y-YPos;
             }
-            cout << "\nX diff:" << XDifferance;
-            cout << ",  Y diff:" << YDifferance;
+           // cout << "\nX diff:" << XDifferance;
+         //   cout << ",  Y diff:" << YDifferance;
             if (!((XDifferance + YDifferance) > Speed  )) {
                 if (GameMap.GetContentsOfGrid(x, y) == nullptr) {
 
                     CurrentMoves.push_back({ x,y });
-                    cout << "Adding:" << x << y << "\n";
+               //     cout << "Adding:" << x << y << "\n";
                 }
             }
         }
     }
-    cout << "Potential moves:" << CurrentMoves.size();
+  //  cout << "Potential moves:" << CurrentMoves.size();
 
 }
 string Unit::GetSpritePath() {
@@ -527,10 +571,10 @@ vector<int> CheckIfMoveOptionClicked(int MouseX,int MouseY) {
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
     for (int i = 0; i < CurrentMoves.size(); i++) {
         if (GridStartY + CurrentMoves[i][1] * SquareSize<MouseY && GridStartY + (1 + CurrentMoves[i][1]) * SquareSize > MouseY) {
-            SDL_Log("Y clicked");
+         //   SDL_Log("Y clicked");
             if (GridStartX + CurrentMoves[i][0] * SquareSize<MouseX && GridStartX + (1 + CurrentMoves[i][0]) * SquareSize > MouseX) {
-                SDL_Log("X clicked");
-                cout << CurrentMoves[i][0] << " " << CurrentMoves[i][1] << " Clicked\n";
+        //        SDL_Log("X clicked");
+           //     cout << CurrentMoves[i][0] << " " << CurrentMoves[i][1] << " Clicked\n";
                 return CurrentMoves[i];
 
             }
@@ -650,7 +694,7 @@ void DrawSelectScreen() {
 void CheckIfOptionsClicked(int X,int Y) {
     for (int i = 0; i < OptionPos.size(); i++) {
         if (X > OptionPos[i].x && X < OptionPos[i].x + OptionPos[i].w && Y> OptionPos[i].y && Y < OptionPos[i].y + OptionPos[i].h) {
-            SDL_Log("Option %d clicked", i);
+        //    SDL_Log("Option %d clicked", i);
             if (i == 0) {
                 SDL_Log("Starting game");
                 App.IsRunning = false;
@@ -744,7 +788,7 @@ int main()
                     break;
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
-                    SDL_Log("Mouse clicked at %f %f",MouseX,MouseY);
+                 //   SDL_Log("Mouse clicked at %f %f",MouseX,MouseY);
                     CheckIfOptionsClicked(MouseX, MouseY);
 
                     break;
@@ -791,17 +835,28 @@ int main()
 
                             GameInProgress->SetCurrentlySelected(nullptr);
                             UpdateNeeded = true;
+                            
+                            GameInProgress->SwapPlayers();
+                            if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                                GameInProgress->SwapPlayers();
+                                if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                                    GameInProgress->SwapPlayers();
+                                    GameInProgress->UpdateTurn();
+                                    GameMap.SetAllUnitsToUnactivated();
+                                }
+                            }
                         }
                     }
                     else {
                         Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
                         if (Temp.GetName() != "EMPTY" ) {
                             SDL_Log("Clicked unit!");
-                            if (Temp.GetTeam() == GameInProgress->GetCurrentPlayer()->GetPlayerId() && !Temp.GetIfUsedThisTurn()) {
+                            if (Temp.GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp.GetIfUsedThisTurn()) {
                                 SDL_Log("Player Clicked their Unit");
                                 Temp.CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(&Temp);
                                 UpdateNeeded = true;
+                                
 
 
                             }
@@ -832,8 +887,6 @@ int main()
                 SDL_RenderPresent(App.renderer);
                 UpdateNeeded = false;
             }
-       
-           
             SDL_Delay(10);
         }
       
