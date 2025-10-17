@@ -89,15 +89,15 @@ Map::Map(int x,int y){
     };
     Width = x;
     Height = y;
-    Grid[3][3].SetContents(new Unit("Name", 10,1,2));
+    Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
     Grid[3][3].GetContents()->UpdatePosition(3, 3);
-    Grid[0][1].SetContents(new Unit("Name4", 10, 1,2));
+    Grid[0][1].SetContents(new Unit("Name4", 10, 1,2, "assets/RedSwordUnit.png"));
     Grid[0][1].GetContents()->UpdatePosition(0, 1);
-    Grid[10][10].SetContents(new Unit("Name2", 10, 0,2));
+    Grid[10][10].SetContents(new Unit("Name2", 10, 0,2, "assets/BlueSwordUnit.png"));
     Grid[10][10].GetContents()->UpdatePosition(10, 10);
-    Grid[5][10].SetContents(new Unit("Name3", 10, 0,2));
+    Grid[5][10].SetContents(new Unit("Name3", 10, 0,2, "assets/BlueSwordUnit.png"));
     Grid[5][10].GetContents()->UpdatePosition(5, 10);
-    Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3));
+    Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
     Grid[10][2].GetContents()->UpdatePosition(10, 2);
     AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
     AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
@@ -165,18 +165,20 @@ Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
            
         }
     }
-    return Unit("EMPTY",0,0,0);
+    return Unit("EMPTY",0,0,0,"");
 }
 void Map::AddUnitToGrid(Unit* Unit) {
     UnitsInGrid.push_back(*Unit);
 }
 
-Unit::Unit(string Name, int Health,int Team,int Speed) {
+Unit::Unit(string Name, int Health,int Team,int Speed, string Path) {
     this->Name = Name;
     this->Health = Health;
     this->Team = Team;
     this->Speed = Speed;
     UsedThisTurn = false;
+    SpritePath= string(SDL_GetBasePath()) + Path;
+
 }
 void Unit::SetWeapon(Weapon weapon) {
     EquippedWeapon = &weapon;
@@ -238,6 +240,9 @@ void Unit::CalculateCurrentMoves() {
     }
     cout << "Potential moves:" << CurrentMoves.size();
 
+}
+string Unit::GetSpritePath() {
+    return SpritePath;
 }
 
 struct OptionBoxes {
@@ -375,10 +380,11 @@ void DrawGrid() {
 
     string Path = std::string(SDL_GetBasePath()) + "assets/BlueSwordUnit.png";
 
-    SDL_Texture* SpriteTexture = IMG_LoadTexture(App.renderer, Path.c_str());
-    if (!SpriteTexture) {
-        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
-    }
+    //SDL_Texture* SpriteTexture = IMG_LoadTexture(App.renderer, Path.c_str());
+    //if (!SpriteTexture) {
+      //  SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+    //}
+    SDL_Texture* SpriteTexture;
     bool SpriteDrawn = false;
    // SDL_DestroySurface(Sprites);
     bool LastWasSquare=false, LastRowStartedWithSquare=false;
@@ -401,20 +407,19 @@ void DrawGrid() {
             }
             if (GameMap.GetContentsOfGrid(x,y)!=NULL ) {
                 GridSquare.x = GridStartX + (x * SquareSize);
-                if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
-                    if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
-                        SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
-                    }
-                    else {
-                        SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
-                      //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
-                        SpriteDrawn = true;
-                    }   
+                if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                    SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
                 }
                 else {
-                    SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
-
+                    SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetSpritePath()).c_str());
+                    if (!SpriteTexture) {
+                        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+                    }
+                    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+                    //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    SpriteDrawn = true;
                 }
+
                 if(!SpriteDrawn){
                     SDL_RenderFillRect(App.renderer, &GridSquare);
                 }
@@ -433,6 +438,26 @@ void DrawGrid() {
         
 
     }
+
+
+   // if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
+ //       if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+     //       SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+       // }
+  //      else {
+    //        SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetSpritePath()).c_str());
+      //      if (!SpriteTexture) {
+        //        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+          //  }
+         //   SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+            //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+           // SpriteDrawn = true;
+       // }
+   // }
+   // else {
+   //     SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
+
+   // }
 
   //  GridSquare.h = SquareSize; GridSquare.w = SquareSize;
    // SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
@@ -743,7 +768,7 @@ int main()
     CreateGame();
     GameInProgress = new Game("Player1", "Player2");
     GameInProgress->SetCurrentlySelected(nullptr);
-    Unit Temp=Unit("",0,0,0);
+    Unit Temp=Unit("",0,0,0,"");
     if (App.GameStart) {
         App.IsRunning = true;
         while (App.IsRunning)

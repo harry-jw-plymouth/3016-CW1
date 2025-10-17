@@ -25,7 +25,7 @@ public:
 };
 class Unit {
 public:
-	Unit(string Name, int Health,int Team,int Speed);
+	Unit(string Name, int Health,int Team,int Speed,string Path);
 	string GetName();
 	int GetTeam();
 	void UpdatePosition(int x, int y);
@@ -36,8 +36,10 @@ public:
 	bool GetIfUsedThisTurn();
 	void SetUsed(bool Status);
 	void SetWeapon(Weapon weapon);
+	string GetSpritePath();
 	Weapon* GetWeapon();
 private:
+	string SpritePath;
 	Weapon* EquippedWeapon;
 	bool UsedThisTurn;
 	vector<vector<int>> CurrentMoves;
