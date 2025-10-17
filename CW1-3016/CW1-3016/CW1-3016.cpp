@@ -74,9 +74,9 @@ void Game::SwapPlayers() {
         SDL_Log("Current player is now player 1");
     }
 }
-bool Game::GetIfAllUnitsActivatedThisTurn(vector<Unit> Units) {
+bool Game::GetIfAllUnitsActivatedThisTurn(vector<Unit*> Units) {
     for (int i = 0; i < Units.size(); i++) {
-        if (!Units[i].GetIfUsedThisTurn()) {
+        if (!Units[i]->GetIfUsedThisTurn()) {
             return false;
         }
     }
@@ -151,17 +151,18 @@ void Map::AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMo
     Grid[NewPos[0]][NewPos[1]].SetContents(UnitToMove);
     Grid[NewPos[0]][NewPos[1]].GetContents()->UpdatePosition(NewPos[0],NewPos[1]);
     Grid[NewPos[0]][NewPos[1]].GetContents()->SetUsed(true);
-    Grid[OldPos[0]][OldPos[1]].SetContents(NULL);
+    Grid[OldPos[0]][OldPos[1]].SetContents(nullptr);
 }
 void Map::AdjustUnits(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove) {
-    for (int i = 0; i < UnitsInGrid.size(); i++) {
-        if (UnitsInGrid[i].GetXPos() == OldPos[0] && UnitsInGrid[i].GetYPos() == OldPos[1]) {
-            UnitsInGrid[i].SetUsed(true);
-            UnitsInGrid[i].UpdatePosition(NewPos[0], NewPos[1]);
-            break;
-        }
+    //for (int i = 0; i < UnitsInGrid.size(); i++) {
+      //  if (UnitsInGrid[i].GetXPos() == OldPos[0] && UnitsInGrid[i].GetYPos() == OldPos[1]) {
+        //    UnitsInGrid[i].SetUsed(true);
+          //  UnitsInGrid[i].UpdatePosition(NewPos[0], NewPos[1]);
+           // break;
+        //}
 
-    }
+    //}
+    UnitToMove->UpdatePosition(NewPos[0], NewPos[1]);
 }
 int Map::GetHeight() {
     return Height;
@@ -173,15 +174,15 @@ Map GameMap(24, 24);
 Unit* Map::GetContentsOfGrid(int X, int Y) {
     return Grid[X][Y].GetContents();
 }
-Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
+Unit* Map::GetIfUnitClicked(int MouseX,int MouseY) {
 //    cout << "Size:" << UnitsInGrid.size();
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
     for (int i = 0; i < UnitsInGrid.size(); i++) {
        // cout << i << ":" << UnitsInGrid[i].GetXPos()<< ","<<UnitsInGrid[i].GetYPos() << "\n";
       //  cout << " true XPOS: " << (UnitsInGrid[i].GetXPos() * SquareSize + GridStartX) << "\n"<<" True YPos: "<< (UnitsInGrid[i].GetYPos() * SquareSize+ GridStartY)<<"\n";
-        if (UnitsInGrid[i].GetXPos() * SquareSize + GridStartX<MouseX && (UnitsInGrid[i].GetXPos() + 1) * SquareSize + GridStartX > MouseX ) {
+        if (UnitsInGrid[i]->GetXPos() * SquareSize + GridStartX<MouseX && (UnitsInGrid[i]->GetXPos() + 1) * SquareSize + GridStartX > MouseX ) {
          //   SDL_Log("Column contains Unit!");
-            if (UnitsInGrid[i].GetYPos() * SquareSize + GridStartY<MouseY && (UnitsInGrid[i].GetYPos() + 1) * SquareSize + GridStartY > MouseY) {
+            if (UnitsInGrid[i]->GetYPos()* SquareSize + GridStartY<MouseY && (UnitsInGrid[i]->GetYPos() + 1) * SquareSize + GridStartY > MouseY) {
            //     SDL_Log("Row containd unit");
            //     cout << "Unit clicked:" << UnitsInGrid[i].GetName();
                 return UnitsInGrid[i];
@@ -189,14 +190,14 @@ Unit Map::GetIfUnitClicked(int MouseX,int MouseY) {
            
         }
     }
-    return Unit("EMPTY",0,0,0,"");
+    return nullptr;
 }
 void Map::AddUnitToGrid(Unit* Unit) {
-    UnitsInGrid.push_back(*Unit);
+    UnitsInGrid.push_back(Unit);
 }
 bool Map::GetIfAllPlayersUnitsUsedThisTurn(int PlayerID) {
     for (int i = 0; i < UnitsInGrid.size(); i++) {
-        if (UnitsInGrid[i].GetTeam() == PlayerID && !UnitsInGrid[i].GetIfUsedThisTurn()) {
+        if (UnitsInGrid[i]->GetTeam() == PlayerID && !UnitsInGrid[i]->GetIfUsedThisTurn()) {
             return false;
         }
     }
@@ -204,15 +205,15 @@ bool Map::GetIfAllPlayersUnitsUsedThisTurn(int PlayerID) {
 }
 void Map::SetAllUnitsToUnactivated() {
     for (int i = 0; i < UnitsInGrid.size(); i++) {
-        UnitsInGrid[i].SetUsed(false);
+        UnitsInGrid[i]->SetUsed(false);
     }
-    for (int y = 0; y < Height; y++) {
-        for (int x = 0; x < Width; x++) {
-            if (Grid[x][y].GetContents() != NULL) {
-                Grid[x][y].GetContents()->SetUsed(false);
-            }
-        }
-    }
+ //   for (int y = 0; y < Height; y++) {
+   //     for (int x = 0; x < Width; x++) {
+     //       if (Grid[x][y].GetContents() != NULL) {
+       //         Grid[x][y].GetContents()->SetUsed(false);
+         //   }
+        //}
+    //}
 }
 
 Unit::Unit(string Name, int Health,int Team,int Speed, string Path) {
@@ -848,13 +849,13 @@ int main()
                         }
                     }
                     else {
-                        Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
-                        if (Temp.GetName() != "EMPTY" ) {
+                        Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
+                        if (Temp!=nullptr ) {
                             SDL_Log("Clicked unit!");
-                            if (Temp.GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp.GetIfUsedThisTurn()) {
+                            if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn()) {
                                 SDL_Log("Player Clicked their Unit");
-                                Temp.CalculateCurrentMoves();
-                                GameInProgress->SetCurrentlySelected(&Temp);
+                                Temp->CalculateCurrentMoves();
+                                GameInProgress->SetCurrentlySelected(Temp);
                                 UpdateNeeded = true;
                                 
 

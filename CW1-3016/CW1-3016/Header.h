@@ -57,8 +57,6 @@ public:
 	Unit* GetContents();
 	void SetContents(Unit* NewContents);
 	Unit* Contains;
-
-
 };
 
 
@@ -68,7 +66,7 @@ public:
 	Unit* GetContentsOfGrid(int X, int Y);
 	void AddUnitToGrid(Unit* Unit);
 	void MoveUnit(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
-	Unit GetIfUnitClicked(int MouseX,int MouseY);
+	Unit* GetIfUnitClicked(int MouseX,int MouseY);
 	int GetHeight();
 	int GetWidth();
 	void AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
@@ -80,7 +78,7 @@ private:
 	vector<vector<Square>>Grid;
 	int Width;
 	int Height;
-	vector<Unit> UnitsInGrid;
+	vector<Unit*> UnitsInGrid;
 
 };
 
@@ -101,7 +99,7 @@ public:
 	Unit* GetCurrentlySelected();
 	void SetCurrentlySelected(Unit* Selected);
 	vector<int> GetCurrentlySelectedPos();
-	bool GetIfAllUnitsActivatedThisTurn(vector<Unit> Units);
+	bool GetIfAllUnitsActivatedThisTurn(vector<Unit*> Units);
 	void UpdateTurn();
 	void SwapPlayers();
 private:
