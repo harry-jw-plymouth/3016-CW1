@@ -24,12 +24,15 @@ int Weapon::GetStrength() {
 int Weapon::GetRange() {
     return Range;
 }
-Sword::Sword(string Name, int Range, int Strength) :Weapon(Name, Range, Strength) {
-
+Sword::Sword(string Name, int Range, int Strength):Weapon(Name,Range,Strength) {
+    cout << "Making sword\n";
 }
 
 
+vector<vector<int>> SquaresInRange;
 vector<Weapon> Weapons;
+Map GameMap(24, 24);
+bool MoveDone;
 
 Player::Player(string Name,int PlayerId) {
     this->Name = Name;
@@ -86,6 +89,13 @@ void Game::UpdateTurn() {
     Turn++;
     cout << "\n Turn " << Turn << "\n";
 }
+void CreateWeapons() {
+    Sword* IRon = new Sword("Iron sword", 1, 5);
+    Weapons.push_back(Sword("Iron Sword", 1, 5));
+    //   Weapons.emplace_back(make_shared<Sword>("Iron Sword", 1, 5));
+    //   Weapons.emplace_back(new Sword("Power sword", 1, 7));
+
+}
 
 const int WINDOW_HEIGHT = 1400;
 const int WINDOW_WIDTH = 2200;
@@ -101,8 +111,10 @@ void Square::SetContents(Unit* NewContents) {
 Unit* Square::GetContents() {
     return Contains;
 } 
+
 bool UpdateNeeded = true;
 Map::Map(int x,int y){
+    CreateWeapons();
     vector<Square>Temp;
     for (int Y = 0; Y < y; Y++) {
         Temp.clear();
@@ -113,16 +125,27 @@ Map::Map(int x,int y){
     };
     Width = x;
     Height = y;
-    Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
-    Grid[3][3].GetContents()->UpdatePosition(3, 3);
+
+    cout << "Weapons[0] at map creation: " + Weapons[0].GetName()<<"\n";
+    Unit* U1 =new Unit("Name", 10, 1, 2, "assets/RedSwordUnit.png");
+    U1->UpdatePosition(3, 3); U1->SetWeapon(new Weapon("Iron Sword",1,5));
+    Grid[3][3].SetContents(U1);
+    cout<<"Equipped weapons:" << Grid[3][3].GetContents()->GetWeapon()->GetName()<<"\n";
+   // Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
+   // Grid[3][3].GetContents()->UpdatePosition(3, 3);
+   // Grid[3][3].GetContents()->SetWeapon(&Weapons[0]);
     Grid[0][1].SetContents(new Unit("Name4", 10, 1,2, "assets/RedSwordUnit.png"));
     Grid[0][1].GetContents()->UpdatePosition(0, 1);
+    Grid[0][1].GetContents()->SetWeapon(&Weapons[0]);
     Grid[10][10].SetContents(new Unit("Name2", 10, 0,2, "assets/BlueSwordUnit.png"));
     Grid[10][10].GetContents()->UpdatePosition(10, 10);
+    Grid[10][10].GetContents()->SetWeapon(&Weapons[0]);
     Grid[5][10].SetContents(new Unit("Name3", 10, 0,2, "assets/BlueSwordUnit.png"));
     Grid[5][10].GetContents()->UpdatePosition(5, 10);
+    Grid[5][10].GetContents()->SetWeapon(&Weapons[0]);
     Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
     Grid[10][2].GetContents()->UpdatePosition(10, 2);
+    Grid[10][2].GetContents()->SetWeapon(&Weapons[0]);
     AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
     AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
 //    cout << Grid[3][3].GetContents();
@@ -170,7 +193,7 @@ int Map::GetHeight() {
 int Map::GetWidth() {
     return Width;
 }
-Map GameMap(24, 24);
+
 Unit* Map::GetContentsOfGrid(int X, int Y) {
     return Grid[X][Y].GetContents();
 }
@@ -225,8 +248,9 @@ Unit::Unit(string Name, int Health,int Team,int Speed, string Path) {
     SpritePath= string(SDL_GetBasePath()) + Path;
 
 }
-void Unit::SetWeapon(Weapon weapon) {
-    EquippedWeapon = &weapon;
+void Unit::SetWeapon(Weapon* weapon) {
+    EquippedWeapon = weapon;
+    cout << "Weapon for " << Name << " Set too " << weapon->GetName() << "\n";
 }
 Weapon* Unit::GetWeapon() {
     return EquippedWeapon;
@@ -254,6 +278,40 @@ int Unit::GetXPos() {
 }
 vector<vector<int>> Unit::GetCurrentMoves() {
     return CurrentMoves;
+}
+vector<vector<int>> Unit::GetCurrentAttacks() {
+    return CurrentAttacks;
+}
+void Unit::CalculatePossibleAttacks() {
+    int XDifferance, YDifferance;
+    cout << "Calculating possible attacks" << "/n range of "+EquippedWeapon->GetName() + ":" << EquippedWeapon->GetRange() << "\n";
+
+    CurrentAttacks.clear();
+    for (int y = 0; y < GameMap.GetHeight(); y++) {
+        for (int x = 0; x < GameMap.GetWidth(); x++) {
+            if (XPos > x) {
+                XDifferance = XPos - x;
+            }
+            else {
+                XDifferance = x - XPos;
+            }
+            if (YPos > y) {
+                YDifferance = YPos - y;
+            }
+            else {
+                YDifferance = y - YPos;
+            }
+            // cout << "\nX diff:" << XDifferance;
+          //   cout << ",  Y diff:" << YDifferance;
+            if (!((XDifferance + YDifferance) > EquippedWeapon->GetRange())) {
+                if (GameMap.GetContentsOfGrid(x, y) == nullptr) {
+
+                    CurrentAttacks.push_back({ x,y });
+                    cout << "Adding:" << x << y << "\n";
+                }
+            }
+        }
+    }
 }
 void Unit::CalculateCurrentMoves() {
     int XDifferance, YDifferance;
@@ -542,6 +600,74 @@ void DrawGrid() {
 //    }
 
 }
+void DrawGridWithAttackOptions() {
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    SDL_SetRenderDrawColor(App.renderer, 120, 230, 180, 255);
+    SDL_FRect BackGround, GridSquare;
+    BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize; BackGround.h = SquareSize * GameMap.GetHeight();
+    SDL_RenderFillRect(App.renderer, &BackGround);
+
+    vector<vector<int>>CurrentAttacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
+    cout << "Number of possible attacls" << CurrentAttacks.size();
+
+    bool LastWasSquare = false, LastRowStartedWithSquare = false;
+    GridSquare.h = SquareSize; GridSquare.w = SquareSize;
+    SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+    for (int y = 0; y < GameMap.GetHeight(); y++) {
+        GridSquare.y = GridStartY + (y * SquareSize);
+        LastWasSquare = true;
+        if (!LastRowStartedWithSquare) {
+            LastWasSquare = false;
+        }
+        for (int x = 0; x < GameMap.GetWidth(); x++) {
+            if (!LastWasSquare) {
+                GridSquare.x = GridStartX + (x * SquareSize);
+                SDL_RenderFillRect(App.renderer, &GridSquare);
+                LastWasSquare = true;
+            }
+            else {
+                LastWasSquare = false;
+            }
+            for (int i = 0; i < CurrentAttacks.size(); i++) {
+                if (CurrentAttacks[i][0] == x && CurrentAttacks[i][1] == y) {
+                    GridSquare.x = GridStartX + (x * SquareSize);
+                    SDL_SetRenderDrawColor(App.renderer, 123, 104, 238, 255);
+                    SDL_RenderFillRect(App.renderer, &GridSquare);
+                    SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+
+                }
+            }
+            if (GameMap.GetContentsOfGrid(x, y) != NULL) {
+                GridSquare.x = GridStartX + (x * SquareSize);
+                if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
+                    if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                        SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                    }
+                    else {
+                        SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    }
+
+                }
+                else {
+                    SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
+
+                }
+                SDL_RenderFillRect(App.renderer, &GridSquare);
+                SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+
+
+            }
+        }
+        if (LastRowStartedWithSquare) {
+            LastRowStartedWithSquare = false;
+        }
+        else {
+            LastRowStartedWithSquare = true;
+        }
+    }
+
+
+}
 void DrawGameScreenTemp() {
     SDL_SetRenderDrawColor(App.renderer, 175, 225, 175, 180);
     SDL_RenderClear(App.renderer);
@@ -549,8 +675,13 @@ void DrawGameScreenTemp() {
         DrawGrid();
     }
     else {
-
-        DrawGridWithMoveOptions();
+        if (MoveDone) {
+            DrawGridWithAttackOptions();
+        }
+        else {
+            DrawGridWithMoveOptions();
+        }
+       
     }
     
     RenderBorders(WINDOW_HEIGHT, WINDOW_WIDTH);
@@ -615,11 +746,7 @@ bool CreateApp() {
 
     return true;
 }
-void CreateWeapons() {
-//    Weapons.emplace_back(new Sword("Iron Sword", 1, 5));
- //   Weapons.emplace_back(new Sword("Power sword", 1, 7));
 
-}
 bool CreateGame() {
     if ((App.window = SDL_CreateWindow("GameScreen",WINDOW_WIDTH, WINDOW_HEIGHT, 0)) == nullptr) {
         SDL_Quit();
@@ -631,7 +758,7 @@ bool CreateGame() {
     }
     if ((App.renderer = SDL_CreateRenderer(App.window, nullptr)) == nullptr) {
     }
-    CreateWeapons();
+    
 
     return true;
 }
@@ -735,6 +862,7 @@ int main()
         return 1;
     }
 
+    CreateWeapons();
     SDL_Color color = { 255, 255, 255 };
    // SDL_Surface* surface = TTF_RenderText_Solid(font, "Hello SDL_ttf!", 24,color);
   //  SDL_Texture* texture = SDL_CreateTextureFromSurface(App.renderer, surface);
@@ -811,6 +939,7 @@ int main()
         }
     }
     CreateGame();
+    MoveDone = false;
     GameInProgress = new Game("Player1", "Player2");
     GameInProgress->SetCurrentlySelected(nullptr);
     Unit Temp=Unit("",0,0,0,"");
@@ -827,32 +956,50 @@ int main()
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
                     SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
                     if (GameInProgress->GetCurrentlySelected() != nullptr) {
-                        vector<int> Move=CheckIfMoveOptionClicked(MouseX, MouseY);
-                        if (Move[0] != -1 ) {
-                            GameInProgress->GetCurrentlySelected()->UpdatePosition(Move[0], Move[1]);
-                            GameInProgress->GetCurrentlySelected()->SetUsed(true);
-                            GameMap.MoveUnit(Move, GameInProgress->GetCurrentlySelectedPos(), GameInProgress->GetCurrentlySelected());
-                            
+                        vector<int> Move = CheckIfMoveOptionClicked(MouseX, MouseY);
+                        if (MoveDone) {
 
-                            GameInProgress->SetCurrentlySelected(nullptr);
-                            UpdateNeeded = true;
-                            
-                            GameInProgress->SwapPlayers();
-                            if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+
+                        }
+                        else {
+                            if (Move[0] != -1) {
+                                GameInProgress->GetCurrentlySelected()->UpdatePosition(Move[0], Move[1]);
+                                GameInProgress->GetCurrentlySelected()->SetUsed(true);
+                                GameMap.MoveUnit(Move, GameInProgress->GetCurrentlySelectedPos(), GameInProgress->GetCurrentlySelected());
+
+
+                                //cout<<"Weapon" <<GameInProgress->GetCurrentlySelected()->GetWeapon()<<"\n";
+                                GameInProgress->GetCurrentlySelected()->CalculatePossibleAttacks();
+                                if (!GameInProgress->GetCurrentlySelected()->GetCurrentAttacks().size() == 0) {
+                                    UpdateNeeded = true;
+                                    MoveDone = true;
+                                }
+                                else{
+                                    GameInProgress->SetCurrentlySelected(nullptr);
+                                    UpdateNeeded = true;
+                                    MoveDone = false;
+                                }
+                                
+                                
+
                                 GameInProgress->SwapPlayers();
                                 if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
                                     GameInProgress->SwapPlayers();
-                                    GameInProgress->UpdateTurn();
-                                    GameMap.SetAllUnitsToUnactivated();
+                                    if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                                        GameInProgress->SwapPlayers();
+                                        GameInProgress->UpdateTurn();
+                                        GameMap.SetAllUnitsToUnactivated();
+                                    }
                                 }
                             }
                         }
+                        
                     }
                     else {
                         Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
                         if (Temp!=nullptr ) {
                             SDL_Log("Clicked unit!");
-                            if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn()) {
+                            if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn() && !MoveDone) {
                                 SDL_Log("Player Clicked their Unit");
                                 Temp->CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(Temp);

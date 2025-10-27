@@ -12,16 +12,16 @@ public :
 	string GetName();
 	int GetRange();
 	int GetStrength();
-private:
+protected:
 	string Name;
 	int Range;
 	int Strength;
 
 };
 
-class Sword:Weapon {
+class Sword:virtual public Weapon {
 public:
-	Sword(string Name, int Range, int Strength) ;
+	Sword(string Name, int Range, int Strength);
 };
 class Unit {
 public:
@@ -32,16 +32,20 @@ public:
 	int GetXPos();
 	int GetYPos();
 	void CalculateCurrentMoves();
+	void CalculatePossibleAttacks();
 	vector<vector<int>> GetCurrentMoves();
+	vector<vector<int>> GetCurrentAttacks();
 	bool GetIfUsedThisTurn();
 	void SetUsed(bool Status);
-	void SetWeapon(Weapon weapon);
+	void SetWeapon(Weapon* weapon);
 	string GetSpritePath();
 	Weapon* GetWeapon();
+
 private:
 	string SpritePath;
 	Weapon* EquippedWeapon;
 	bool UsedThisTurn;
+	vector<vector<int>>CurrentAttacks;
 	vector<vector<int>> CurrentMoves;
 	string Name;
 	int Health;
