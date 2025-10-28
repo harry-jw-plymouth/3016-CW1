@@ -127,25 +127,44 @@ Map::Map(int x,int y){
     Height = y;
 
     cout << "Weapons[0] at map creation: " + Weapons[0].GetName()<<"\n";
-    Unit* U1 =new Unit("Name", 10, 1, 2, "assets/RedSwordUnit.png");
+    Unit* U1 =new Unit("Red1",10,5, 10, 1, 4, "assets/RedSwordUnit.png");
     U1->UpdatePosition(3, 3); U1->SetWeapon(new Weapon("Iron Sword",1,5));
     Grid[3][3].SetContents(U1);
+
+    Unit* U2 = new Unit("Red2",30,6, 10, 1, 6, "assets/RedSwordUnit.png");
+    U2->UpdatePosition(0, 1); U2->SetWeapon(new Weapon("Iron Sword", 1, 10));
+    Grid[0][1].SetContents(U2);
+
+    Unit* U3 = new Unit("Blue1",40,5, 10, 0, 5, "assets/BlueSwordUnit.png");
+    U3->UpdatePosition(10, 10); U3->SetWeapon(new Weapon("Iron Sword", 1, 10));
+    Grid[10][10].SetContents(U3);
+
+    Unit* U4 = new Unit("Blue2",20,4, 10, 0, 2, "assets/BlueSwordUnit.png");
+    U4->UpdatePosition(5, 10); U4->SetWeapon(new Weapon("Iron Sword", 1, 10));
+    Grid[5][10].SetContents(U4);
+
+    Unit* U5 = new Unit("Blue3",10,5, 10, 0, 6, "assets/BlueSwordUnit.png");
+    U5->UpdatePosition(10, 2); U5->SetWeapon(new Weapon("Iron Sword", 1, 10));
+    Grid[10][2].SetContents(U5);
+
     cout<<"Equipped weapons:" << Grid[3][3].GetContents()->GetWeapon()->GetName()<<"\n";
    // Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
    // Grid[3][3].GetContents()->UpdatePosition(3, 3);
    // Grid[3][3].GetContents()->SetWeapon(&Weapons[0]);
-    Grid[0][1].SetContents(new Unit("Name4", 10, 1,2, "assets/RedSwordUnit.png"));
-    Grid[0][1].GetContents()->UpdatePosition(0, 1);
-    Grid[0][1].GetContents()->SetWeapon(&Weapons[0]);
-    Grid[10][10].SetContents(new Unit("Name2", 10, 0,2, "assets/BlueSwordUnit.png"));
-    Grid[10][10].GetContents()->UpdatePosition(10, 10);
-    Grid[10][10].GetContents()->SetWeapon(&Weapons[0]);
-    Grid[5][10].SetContents(new Unit("Name3", 10, 0,2, "assets/BlueSwordUnit.png"));
-    Grid[5][10].GetContents()->UpdatePosition(5, 10);
-    Grid[5][10].GetContents()->SetWeapon(&Weapons[0]);
-    Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
-    Grid[10][2].GetContents()->UpdatePosition(10, 2);
-    Grid[10][2].GetContents()->SetWeapon(&Weapons[0]);
+
+    
+    //Grid[0][1].SetContents(new Unit("Name4", 10, 1,2, "assets/RedSwordUnit.png"));
+   // Grid[0][1].GetContents()->UpdatePosition(0, 1);
+    //Grid[0][1].GetContents()->SetWeapon(&Weapons[0]);
+ //   Grid[10][10].SetContents(new Unit("Name2", 10, 0,2, "assets/BlueSwordUnit.png"));
+   // Grid[10][10].GetContents()->UpdatePosition(10, 10);
+   // Grid[10][10].GetContents()->SetWeapon(&Weapons[0]);
+ //   Grid[5][10].SetContents(new Unit("Name3", 10, 0,2, "assets/BlueSwordUnit.png"));
+   // Grid[5][10].GetContents()->UpdatePosition(5, 10);
+   // Grid[5][10].GetContents()->SetWeapon(&Weapons[0]);
+  //  Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
+    //Grid[10][2].GetContents()->UpdatePosition(10, 2);
+   // Grid[10][2].GetContents()->SetWeapon(&Weapons[0]);
     AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
     AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
 //    cout << Grid[3][3].GetContents();
@@ -193,6 +212,15 @@ int Map::GetHeight() {
 int Map::GetWidth() {
     return Width;
 }
+Unit* Map::GetUnitInPos(int x, int y) {
+    for (int i = 0; i < UnitsInGrid.size(); i++) {
+        if (UnitsInGrid[i]->GetXPos() == x && UnitsInGrid[i]->GetYPos() == y) {
+            return UnitsInGrid[i];
+        }
+    }
+    return nullptr;
+}
+
 
 Unit* Map::GetContentsOfGrid(int X, int Y) {
     return Grid[X][Y].GetContents();
@@ -218,6 +246,18 @@ Unit* Map::GetIfUnitClicked(int MouseX,int MouseY) {
 void Map::AddUnitToGrid(Unit* Unit) {
     UnitsInGrid.push_back(Unit);
 }
+bool Map::CheckForDefeated() {
+    bool ItemRemoved = false;
+    for(int i=0;i<UnitsInGrid.size();i++){
+        if (UnitsInGrid[i]->GetHealth() < 1) {
+            Grid[UnitsInGrid[i]->GetXPos()][UnitsInGrid[i]->GetYPos()].SetContents(nullptr);
+            UnitsInGrid.erase(UnitsInGrid.begin()+i);
+            ItemRemoved = true;
+        }
+    }
+    return ItemRemoved;
+}
+
 bool Map::GetIfAllPlayersUnitsUsedThisTurn(int PlayerID) {
     for (int i = 0; i < UnitsInGrid.size(); i++) {
         if (UnitsInGrid[i]->GetTeam() == PlayerID && !UnitsInGrid[i]->GetIfUsedThisTurn()) {
@@ -239,14 +279,25 @@ void Map::SetAllUnitsToUnactivated() {
     //}
 }
 
-Unit::Unit(string Name, int Health,int Team,int Speed, string Path) {
+Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Speed, string Path) {
     this->Name = Name;
     this->Health = Health;
     this->Team = Team;
     this->Speed = Speed;
+    this->Dexterity = Dexterity;
     UsedThisTurn = false;
+    this->Defence = Defence;
     SpritePath= string(SDL_GetBasePath()) + Path;
 
+}
+int Unit::GetHealth() {
+    return Health;
+}
+int Unit::GetDefence() {
+    return Defence;
+}
+int Unit::GetSpeed() {
+    return Speed;
 }
 void Unit::SetWeapon(Weapon* weapon) {
     EquippedWeapon = weapon;
@@ -304,14 +355,20 @@ void Unit::CalculatePossibleAttacks() {
             // cout << "\nX diff:" << XDifferance;
           //   cout << ",  Y diff:" << YDifferance;
             if (!((XDifferance + YDifferance) > EquippedWeapon->GetRange())) {
-                if (GameMap.GetContentsOfGrid(x, y) == nullptr) {
+                if (GameMap.GetContentsOfGrid(x, y) != nullptr) {
+                    if(GameMap.GetContentsOfGrid(x,y)->GetTeam()!=Team){
+                        CurrentAttacks.push_back({ x,y });
+                        cout << "Adding:" << x << y << "\n";
+                    }
 
-                    CurrentAttacks.push_back({ x,y });
-                    cout << "Adding:" << x << y << "\n";
+                    
                 }
             }
         }
     }
+}
+int Unit::GetDexterity() {
+    return Dexterity;
 }
 void Unit::CalculateCurrentMoves() {
     int XDifferance, YDifferance;
@@ -346,6 +403,80 @@ void Unit::CalculateCurrentMoves() {
 }
 string Unit::GetSpritePath() {
     return SpritePath;
+}
+void Unit::TakeDamage(int Damage) {
+    Health -= Damage;
+}
+
+Combat::Combat(Unit* Attacker, Unit* Defender) {
+    this->Attacker = Attacker;
+    this->Defender = Defender;
+}
+Unit* Combat::GetAttacker() {
+    return Attacker;
+}
+Unit* Combat::GetDefender() {
+    return Defender;
+}
+string Combat::DoCombat() {
+    int AttackerSpeed = Attacker->GetSpeed() + 3;
+    string Result="";
+    if (GetIfHits(Attacker->GetDexterity(),Defender->GetSpeed())) {
+
+        int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
+        Defender->TakeDamage(Damage);
+        Result += Defender->GetName() + " took " + to_string( Damage) + " from an attack from " + Attacker->GetName() + "\n";
+    }
+    else {
+        Result += Defender->GetName() + " dodges attack from " + Attacker->GetName()+"\n";
+
+    }
+    if (Defender->GetHealth() > 0) {
+        if (GetIfHits(Defender->GetDexterity(), AttackerSpeed)) {
+
+            int Damage = GetDamage(Defender->GetWeapon()->GetStrength(), Attacker->GetDefence());
+            Attacker->TakeDamage(Damage);
+            Result += Defender->GetName() + " Counters for " + to_string(Damage) + " damage \n";
+        }
+        else {
+            Result += Attacker->GetName() + " dodges attack from " + Defender->GetName() + "\n";
+        }
+    }
+    if (Attacker->GetHealth() > 0 && AttackerSpeed>Defender->GetSpeed()+5) {
+        Result += Attacker->GetName() + " gets attempts a vantage attack \n";
+        if (GetIfHits(Attacker->GetDexterity(), Defender->GetSpeed())) {
+
+            int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
+            Defender->TakeDamage(Damage);
+            Result += Defender->GetName() + " took " + to_string(Damage) + "\n";
+        }
+        else {
+            Result += Defender->GetName() + " dodges the attack " + "\n";
+
+        }
+        if (Attacker->GetHealth() < 0) {
+            Result += Attacker->GetName() + " fell in battle from the counterattack \n ";
+        }
+        if (Defender->GetHealth() < 0) {
+            Result += Defender->GetName() + " fell in battle from the attack\n";
+
+        }
+        return Result;
+
+    }
+
+
+}
+bool Combat::GetIfHits(int Dex,int Avo) {
+    return true;
+}
+int Combat::GetDamage(int Str, int Def) {
+    int Damage = Str - Def;
+    if (Damage < 1) {
+        return 1;
+    }
+    return Damage;
+
 }
 
 struct OptionBoxes {
@@ -610,6 +741,7 @@ void DrawGridWithAttackOptions() {
     vector<vector<int>>CurrentAttacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
     cout << "Number of possible attacls" << CurrentAttacks.size();
 
+    bool Targeted = false;
     bool LastWasSquare = false, LastRowStartedWithSquare = false;
     GridSquare.h = SquareSize; GridSquare.w = SquareSize;
     SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
@@ -634,26 +766,31 @@ void DrawGridWithAttackOptions() {
                     SDL_SetRenderDrawColor(App.renderer, 123, 104, 238, 255);
                     SDL_RenderFillRect(App.renderer, &GridSquare);
                     SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+                    Targeted = true;
+                    // Draw square to show valid attack
 
                 }
             }
             if (GameMap.GetContentsOfGrid(x, y) != NULL) {
                 GridSquare.x = GridStartX + (x * SquareSize);
-                if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
-                    if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
-                        SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                if (!Targeted) {
+                    if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
+                        if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                            SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                        }
+                        else {
+                            SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                        }
+
                     }
                     else {
-                        SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                        SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
+
                     }
-
+                    SDL_RenderFillRect(App.renderer, &GridSquare);
+                    SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
                 }
-                else {
-                    SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
-
-                }
-                SDL_RenderFillRect(App.renderer, &GridSquare);
-                SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+                Targeted = false;
 
 
             }
@@ -676,6 +813,7 @@ void DrawGameScreenTemp() {
     }
     else {
         if (MoveDone) {
+            cout << "Drawing possible attacks" << "\n";
             DrawGridWithAttackOptions();
         }
         else {
@@ -833,6 +971,29 @@ void CheckIfOptionsClicked(int X,int Y) {
 
 }
 
+vector<int> GetPosClicked(int MouseX,int MouseY) {
+    vector<int> Pos;
+
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    int Current = 0; int Next = 0;
+    for (int i = 0; i < GameMap.GetWidth(); i++) {
+        Current = GridStartX + i * SquareSize; Next = GridStartX + ((i + 1) * SquareSize);
+        if (MouseX > Current && MouseX < Next) {
+            Pos.push_back(i);
+            break;
+        }
+    }
+    for (int i = 0; i < GameMap.GetHeight(); i++) {
+        Current = GridStartY + i * SquareSize; Next = GridStartY + ((i + 1) * SquareSize);
+        if (MouseY > Current && MouseY < Next) {
+            Pos.push_back(i);
+            break;
+        }
+    }
+
+    return Pos;
+
+}
 
 
 int main()
@@ -942,7 +1103,7 @@ int main()
     MoveDone = false;
     GameInProgress = new Game("Player1", "Player2");
     GameInProgress->SetCurrentlySelected(nullptr);
-    Unit Temp=Unit("",0,0,0,"");
+    Unit Temp=Unit("",0,0,0,0,0,"");
     if (App.GameStart) {
         App.IsRunning = true;
         while (App.IsRunning)
@@ -958,7 +1119,27 @@ int main()
                     if (GameInProgress->GetCurrentlySelected() != nullptr) {
                         vector<int> Move = CheckIfMoveOptionClicked(MouseX, MouseY);
                         if (MoveDone) {
+                            //check for selection of attack
+                            vector<int> PosClicked = GetPosClicked(MouseX, MouseY);
+                            vector<vector<int>> Attacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
+                            for (int i = 0; i <Attacks.size(); i++) {
+                                if (PosClicked[0] == Attacks[i][0] && PosClicked[1] == Attacks[i][1]) {
+                                    cout << "Enemy clicked"<<"\n ";
+                                    cout << "Currently selected before combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
+                                    Unit* Enemy = GameMap.GetUnitInPos(PosClicked[0], PosClicked[1]);
+                                    cout << "Combat: " << GameInProgress->GetCurrentlySelected()->GetName() << " VS " << Enemy->GetName() << "\n";
+                                    Combat CurrentCombat(GameInProgress->GetCurrentlySelected(), Enemy);
+                                    string Combatresult = CurrentCombat.DoCombat();
+                                    cout << Combatresult<<"\n";
+                                    
+                                    cout << "Currently selected after combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
 
+                                    GameInProgress->SetCurrentlySelected(nullptr);
+                                    UpdateNeeded = true;
+                                    MoveDone = false;
+                                    GameMap.CheckForDefeated();
+                                }
+                            }
 
                         }
                         else {

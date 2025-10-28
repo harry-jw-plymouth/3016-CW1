@@ -25,8 +25,13 @@ public:
 };
 class Unit {
 public:
-	Unit(string Name, int Health,int Team,int Speed,string Path);
+	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Speed,string Path);
 	string GetName();
+	int GetDexterity();
+	int GetDefence();
+	int GetSpeed();
+	int GetHealth();
+	//int GetStrength();
 	int GetTeam();
 	void UpdatePosition(int x, int y);
 	int GetXPos();
@@ -40,8 +45,10 @@ public:
 	void SetWeapon(Weapon* weapon);
 	string GetSpritePath();
 	Weapon* GetWeapon();
+	void TakeDamage(int Damage);
 
 private:
+	int Dexterity;
 	string SpritePath;
 	Weapon* EquippedWeapon;
 	bool UsedThisTurn;
@@ -53,6 +60,7 @@ private:
 	int Team;
 	int XPos;
 	int YPos;
+	int Defence;
 };
 
 class Square {
@@ -77,6 +85,8 @@ public:
 	void AdjustUnits(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
 	bool GetIfAllPlayersUnitsUsedThisTurn(int PlayerID);
 	void SetAllUnitsToUnactivated();
+	Unit* GetUnitInPos(int x, int y);
+	bool CheckForDefeated();
 
 private:
 	vector<vector<Square>>Grid;
@@ -84,6 +94,18 @@ private:
 	int Height;
 	vector<Unit*> UnitsInGrid;
 
+};
+class Combat {
+public:
+	Combat(Unit* Attacker, Unit* Defender);
+	string DoCombat();
+	Unit* GetAttacker();
+	Unit* GetDefender();
+	bool GetIfHits(int Dex,int Avo);
+	int GetDamage(int Str, int Def);
+private:
+	Unit* Attacker;
+	Unit* Defender;
 };
 
 class Player {
