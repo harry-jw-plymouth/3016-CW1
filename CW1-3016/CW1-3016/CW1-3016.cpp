@@ -5,6 +5,7 @@
 using namespace std;
 #include <string>
 #include <vector>
+#include <random>
 #include <SDL3/SDL.h>
 #include<SDL3_ttf/SDL_ttf.h>
 #include "Header.h"
@@ -31,7 +32,7 @@ Sword::Sword(string Name, int Range, int Strength):Weapon(Name,Range,Strength) {
 
 vector<vector<int>> SquaresInRange;
 vector<Weapon> Weapons;
-Map GameMap(24, 24);
+Map GameMap(24, 24,5,4);
 bool MoveDone;
 
 Player::Player(string Name,int PlayerId) {
@@ -113,7 +114,7 @@ Unit* Square::GetContents() {
 } 
 
 bool UpdateNeeded = true;
-Map::Map(int x,int y){
+Map::Map(int x,int y,int Units,int DeplomentZone){
     CreateWeapons();
     vector<Square>Temp;
     for (int Y = 0; Y < y; Y++) {
@@ -126,28 +127,52 @@ Map::Map(int x,int y){
     Width = x;
     Height = y;
 
-    cout << "Weapons[0] at map creation: " + Weapons[0].GetName()<<"\n";
-    Unit* U1 =new Unit("Red1",10,5, 10, 1, 4, "assets/RedSwordUnit.png");
-    U1->UpdatePosition(3, 3); U1->SetWeapon(new Weapon("Iron Sword",1,5));
-    Grid[3][3].SetContents(U1);
+    Unit* BlueUnit = new Unit("Blue1", 40, 5, 10, 0, 5, "assets/BlueSwordUnit.png");
+    BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
 
-    Unit* U2 = new Unit("Red2",30,6, 10, 1, 6, "assets/RedSwordUnit.png");
-    U2->UpdatePosition(0, 1); U2->SetWeapon(new Weapon("Iron Sword", 1, 10));
-    Grid[0][1].SetContents(U2);
+    cout << "Setup Positions \n";
+    vector<vector<int>> Team1Positions = GetStartingPositions(0, DeplomentZone, Units);
+    vector<vector<int>> Team2Positions = GetStartingPositions(y - DeplomentZone, y-1, Units);
+    cout << "Setup units \n";
+    for (int i = 0; i < Team1Positions.size(); i++) {
+        //setupTeam0
+        Unit* BlueUnit = new Unit(("Blue" + to_string( i)), 10, 5, 10, 0, 4, "assets/BlueSwordUnit.png");
+        BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
+        BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
+        Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
+        AddUnitToGrid(Grid[Team1Positions[i][0]][Team1Positions[i][1]].GetContents());
+     }
+    for (int i = 0; i < Team2Positions.size(); i++) {
+        //setupTeam0
+        Unit* BlueUnit = new Unit("Red" + to_string( i), 10, 5, 10, 1, 4, "assets/RedSwordUnit.png");
+        BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
+        BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
+        Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
+        AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
+    }
 
-    Unit* U3 = new Unit("Blue1",40,5, 10, 0, 5, "assets/BlueSwordUnit.png");
-    U3->UpdatePosition(10, 10); U3->SetWeapon(new Weapon("Iron Sword", 1, 10));
-    Grid[10][10].SetContents(U3);
+  //  cout << "Weapons[0] at map creation: " + Weapons[0].GetName()<<"\n";
+  //  Unit* U1 =new Unit("Red1",10,5, 10, 1, 4, "assets/RedSwordUnit.png");
+    //U1->UpdatePosition(3, 3); U1->SetWeapon(new Weapon("Iron Sword",1,5));
+    //Grid[3][3].SetContents(U1);
 
-    Unit* U4 = new Unit("Blue2",20,4, 10, 0, 2, "assets/BlueSwordUnit.png");
-    U4->UpdatePosition(5, 10); U4->SetWeapon(new Weapon("Iron Sword", 1, 10));
-    Grid[5][10].SetContents(U4);
+   // Unit* U2 = new Unit("Red2",30,6, 10, 1, 6, "assets/RedSwordUnit.png");
+  //  U2->UpdatePosition(0, 1); U2->SetWeapon(new Weapon("Iron Sword", 1, 10));
+  //  Grid[0][1].SetContents(U2);
 
-    Unit* U5 = new Unit("Blue3",10,5, 10, 0, 6, "assets/BlueSwordUnit.png");
-    U5->UpdatePosition(10, 2); U5->SetWeapon(new Weapon("Iron Sword", 1, 10));
-    Grid[10][2].SetContents(U5);
+  //  Unit* U3 = new Unit("Blue1",40,5, 10, 0, 5, "assets/BlueSwordUnit.png");
+   // U3->UpdatePosition(10, 10); U3->SetWeapon(new Weapon("Iron Sword", 1, 10));
+  //  Grid[10][10].SetContents(U3);
 
-    cout<<"Equipped weapons:" << Grid[3][3].GetContents()->GetWeapon()->GetName()<<"\n";
+//    Unit* U4 = new Unit("Blue2",20,4, 10, 0, 2, "assets/BlueSwordUnit.png");
+  //  U4->UpdatePosition(5, 10); U4->SetWeapon(new Weapon("Iron Sword", 1, 10));
+  //  Grid[5][10].SetContents(U4);
+
+   // Unit* U5 = new Unit("Blue3",10,5, 10, 0, 6, "assets/BlueSwordUnit.png");
+  //  U5->UpdatePosition(10, 2); U5->SetWeapon(new Weapon("Iron Sword", 1, 10));
+   // Grid[10][2].SetContents(U5);
+
+  //  cout<<"Equipped weapons:" << Grid[3][3].GetContents()->GetWeapon()->GetName()<<"\n";
    // Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
    // Grid[3][3].GetContents()->UpdatePosition(3, 3);
    // Grid[3][3].GetContents()->SetWeapon(&Weapons[0]);
@@ -165,8 +190,8 @@ Map::Map(int x,int y){
   //  Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
     //Grid[10][2].GetContents()->UpdatePosition(10, 2);
    // Grid[10][2].GetContents()->SetWeapon(&Weapons[0]);
-    AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
-    AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
+    //AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
+    //AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
 //    cout << Grid[3][3].GetContents();
     if (Grid[3][3].GetContents() != nullptr) {
       //  SDL_Log("Grid set correctly\n");
@@ -185,10 +210,48 @@ Map::Map(int x,int y){
        // cout << "XPOS:" << Grid[0][1].GetContents()->GetXPos() << "\nYPOS:" << Grid[0][1].GetContents()->GetYPos();
     }
 }
+bool Map::CheckForEndOfGame() {
+    int NoOfTeams = 0;
+    vector<int>Teams;
+    for (int i = 0; i < UnitsInGrid.size(); i++) {
+        if (!(find(Teams.begin(), Teams.end(), UnitsInGrid[i]->GetTeam())!=Teams.end())) {
+            Teams.push_back(UnitsInGrid[i]->GetTeam());
+        }
+    }
+    if (Teams.size() > 1) {
+        return false;
+    }
+    return true;
+}
 void Map::MoveUnit(vector<int>NewPos,vector<int>OldPos,Unit* UnitToMove) {
     AdjustGridForMove(NewPos,OldPos,UnitToMove);
     AdjustUnits(NewPos, OldPos, UnitToMove);
 }
+bool Map::CheckIfPosTaken(int X, int Y, vector<vector<int>> Positions) {
+    for (int i = 0; i < Positions.size(); i++) {
+        if (Positions[i][0] == X && Positions[i][1] == Y) {
+            return true;
+        }
+    }
+    return false;
+}
+vector<vector<int>> Map::GetStartingPositions(int StartY, int EndY,int NoOfUnits) {
+    vector<vector<int>> StartingPos;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> PositionsY(StartY, EndY);
+    uniform_int_distribution<> PositionsX(0, Width);
+    for (int i = 0; i < NoOfUnits; i++) {
+        int RandomX = PositionsX(gen); int RandomY = PositionsY(gen);
+        while (CheckIfPosTaken(RandomX, RandomY, StartingPos)) {
+            int RandomX = PositionsX(gen); int RandomY = PositionsY(gen);
+        }
+        StartingPos.push_back({ RandomX, RandomY });
+    }
+    return StartingPos;
+
+}
+
 void Map::AdjustGridForMove(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove) {
     Grid[NewPos[0]][NewPos[1]].SetContents(UnitToMove);
     Grid[NewPos[0]][NewPos[1]].GetContents()->UpdatePosition(NewPos[0],NewPos[1]);
@@ -265,6 +328,9 @@ bool Map::GetIfAllPlayersUnitsUsedThisTurn(int PlayerID) {
         }
     }
     return true;
+}
+int Map::GetVictor() {
+    return UnitsInGrid[0]->GetTeam();
 }
 void Map::SetAllUnitsToUnactivated() {
     for (int i = 0; i < UnitsInGrid.size(); i++) {
@@ -802,21 +868,30 @@ void DrawGridWithAttackOptions() {
             LastRowStartedWithSquare = true;
         }
     }
+}
+void DrawCurrentlySelected() {
+    SDL_FRect BackGround;
+    int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    SDL_SetRenderDrawColor(App.renderer, 0, 0, 200, 255);
+    BackGround.x = 100; BackGround.y = GridStartY; BackGround.w = 300; BackGround.h = SquareSize * GameMap.GetHeight();
+    SDL_RenderFillRect(App.renderer, &BackGround);
 
 
 }
 void DrawGameScreenTemp() {
     SDL_SetRenderDrawColor(App.renderer, 175, 225, 175, 180);
     SDL_RenderClear(App.renderer);
+    DrawCurrentlySelected();
     if (GameInProgress->GetCurrentlySelected() == nullptr) {
         DrawGrid();
     }
     else {
         if (MoveDone) {
-            cout << "Drawing possible attacks" << "\n";
+           //draw possible attacks
             DrawGridWithAttackOptions();
         }
         else {
+            //draw potential moves
             DrawGridWithMoveOptions();
         }
        
@@ -841,9 +916,7 @@ vector<int> CheckIfMoveOptionClicked(int MouseX,int MouseY) {
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
     for (int i = 0; i < CurrentMoves.size(); i++) {
         if (GridStartY + CurrentMoves[i][1] * SquareSize<MouseY && GridStartY + (1 + CurrentMoves[i][1]) * SquareSize > MouseY) {
-         //   SDL_Log("Y clicked");
             if (GridStartX + CurrentMoves[i][0] * SquareSize<MouseX && GridStartX + (1 + CurrentMoves[i][0]) * SquareSize > MouseX) {
-        //        SDL_Log("X clicked");
            //     cout << CurrentMoves[i][0] << " " << CurrentMoves[i][1] << " Clicked\n";
                 return CurrentMoves[i];
 
@@ -852,23 +925,6 @@ vector<int> CheckIfMoveOptionClicked(int MouseX,int MouseY) {
 
     }
     return { -1,-1 };
-
-//    cout << "Size:" << UnitsInGrid.size();
-  //  
-    //for (int i = 0; i < UnitsInGrid.size(); i++) {
-        // cout << i << ":" << UnitsInGrid[i].GetXPos()<< ","<<UnitsInGrid[i].GetYPos() << "\n";
-       //  cout << " true XPOS: " << (UnitsInGrid[i].GetXPos() * MainGrid.SQUARE_SIZE + GridStartX) << "\n"<<" True YPos: "<< (UnitsInGrid[i].GetYPos() * MainGrid.SQUARE_SIZE + GridStartY)<<"\n";
-      //  if (UnitsInGrid[i].GetXPos() * MainGrid.SQUARE_SIZE + GridStartX<MouseX && (UnitsInGrid[i].GetXPos() + 1) * MainGrid.SQUARE_SIZE + GridStartX > MouseX) {
-            //   SDL_Log("Column contains Unit!");
-        //    if (UnitsInGrid[i].GetYPos() * MainGrid.SQUARE_SIZE + GridStartY<MouseY && (UnitsInGrid[i].GetYPos() + 1) * MainGrid.SQUARE_SIZE + GridStartY > MouseY) {
-                //     SDL_Log("Row containd unit");
-          //      cout << "Unit clicked:" << UnitsInGrid[i].GetName();
-            //    return UnitsInGrid[i];
-            //}
-
-//        }
-  //  }
-
 }
 bool CreateApp() {
     if ((App.window = SDL_CreateWindow("TitleScreen", TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, 0)) == nullptr) {
@@ -1138,6 +1194,11 @@ int main()
                                     UpdateNeeded = true;
                                     MoveDone = false;
                                     GameMap.CheckForDefeated();
+                                    bool Victory = GameMap.CheckForEndOfGame();
+                                    if (Victory) {
+                                        App.IsRunning = false;
+                                    }
+
                                 }
                             }
 
@@ -1221,7 +1282,8 @@ int main()
       
     }
 
-
+    cout << " Game over\n";
+    cout << "Team " << GameMap.GetVictor()<< "won! \n";
     std::cout << "Game Shut down!\n";
 }
 

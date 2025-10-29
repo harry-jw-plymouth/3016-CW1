@@ -74,7 +74,7 @@ public:
 
 class Map {
 public:
-	Map(int x, int y);
+	Map(int x, int y,int Units,int DeploymentZone);
 	Unit* GetContentsOfGrid(int X, int Y);
 	void AddUnitToGrid(Unit* Unit);
 	void MoveUnit(vector<int>NewPos, vector<int>OldPos, Unit* UnitToMove);
@@ -87,6 +87,10 @@ public:
 	void SetAllUnitsToUnactivated();
 	Unit* GetUnitInPos(int x, int y);
 	bool CheckForDefeated();
+	bool CheckForEndOfGame();
+	int GetVictor();
+	vector<vector<int>>GetStartingPositions(int StartY, int EndY,int NoOfUnits);
+	bool CheckIfPosTaken(int X, int Y, vector<vector<int>> Positions);
 
 private:
 	vector<vector<Square>>Grid;
