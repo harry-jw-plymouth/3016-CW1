@@ -150,65 +150,6 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
         AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
     }
-
-  //  cout << "Weapons[0] at map creation: " + Weapons[0].GetName()<<"\n";
-  //  Unit* U1 =new Unit("Red1",10,5, 10, 1, 4, "assets/RedSwordUnit.png");
-    //U1->UpdatePosition(3, 3); U1->SetWeapon(new Weapon("Iron Sword",1,5));
-    //Grid[3][3].SetContents(U1);
-
-   // Unit* U2 = new Unit("Red2",30,6, 10, 1, 6, "assets/RedSwordUnit.png");
-  //  U2->UpdatePosition(0, 1); U2->SetWeapon(new Weapon("Iron Sword", 1, 10));
-  //  Grid[0][1].SetContents(U2);
-
-  //  Unit* U3 = new Unit("Blue1",40,5, 10, 0, 5, "assets/BlueSwordUnit.png");
-   // U3->UpdatePosition(10, 10); U3->SetWeapon(new Weapon("Iron Sword", 1, 10));
-  //  Grid[10][10].SetContents(U3);
-
-//    Unit* U4 = new Unit("Blue2",20,4, 10, 0, 2, "assets/BlueSwordUnit.png");
-  //  U4->UpdatePosition(5, 10); U4->SetWeapon(new Weapon("Iron Sword", 1, 10));
-  //  Grid[5][10].SetContents(U4);
-
-   // Unit* U5 = new Unit("Blue3",10,5, 10, 0, 6, "assets/BlueSwordUnit.png");
-  //  U5->UpdatePosition(10, 2); U5->SetWeapon(new Weapon("Iron Sword", 1, 10));
-   // Grid[10][2].SetContents(U5);
-
-  //  cout<<"Equipped weapons:" << Grid[3][3].GetContents()->GetWeapon()->GetName()<<"\n";
-   // Grid[3][3].SetContents(new Unit("Name", 10,1,2, "assets/RedSwordUnit.png"));
-   // Grid[3][3].GetContents()->UpdatePosition(3, 3);
-   // Grid[3][3].GetContents()->SetWeapon(&Weapons[0]);
-
-    
-    //Grid[0][1].SetContents(new Unit("Name4", 10, 1,2, "assets/RedSwordUnit.png"));
-   // Grid[0][1].GetContents()->UpdatePosition(0, 1);
-    //Grid[0][1].GetContents()->SetWeapon(&Weapons[0]);
- //   Grid[10][10].SetContents(new Unit("Name2", 10, 0,2, "assets/BlueSwordUnit.png"));
-   // Grid[10][10].GetContents()->UpdatePosition(10, 10);
-   // Grid[10][10].GetContents()->SetWeapon(&Weapons[0]);
- //   Grid[5][10].SetContents(new Unit("Name3", 10, 0,2, "assets/BlueSwordUnit.png"));
-   // Grid[5][10].GetContents()->UpdatePosition(5, 10);
-   // Grid[5][10].GetContents()->SetWeapon(&Weapons[0]);
-  //  Grid[10][2].SetContents(new Unit("Name5", 10, 0, 3, "assets/BlueSwordUnit.png"));
-    //Grid[10][2].GetContents()->UpdatePosition(10, 2);
-   // Grid[10][2].GetContents()->SetWeapon(&Weapons[0]);
-    //AddUnitToGrid(Grid[0][1].GetContents()); AddUnitToGrid(Grid[10][2].GetContents());
-    //AddUnitToGrid(Grid[3][3].GetContents()); AddUnitToGrid(Grid[10][10].GetContents()); AddUnitToGrid(Grid[5][10].GetContents());
-//    cout << Grid[3][3].GetContents();
-    if (Grid[3][3].GetContents() != nullptr) {
-      //  SDL_Log("Grid set correctly\n");
-       // cout << "XPOS:" << Grid[3][3].GetContents()->GetXPos() << "\nYPOS:" << Grid[3][3].GetContents()->GetYPos();
-    }
-    if (Grid[10][10].GetContents() != nullptr) {
-   //     SDL_Log("\nGrid set correctly2\n");
-     //   cout << "XPOS:" << Grid[10][10].GetContents()->GetXPos() << "\nYPOS:" << Grid[10][10].GetContents()->GetYPos();
-    }
-    if (Grid[5][10].GetContents() != nullptr) {
-      //  SDL_Log("\nGrid set correctly3\n");
-    //    cout << "XPOS:" << Grid[5][10].GetContents()->GetXPos() << "\nYPOS:" << Grid[5][10].GetContents()->GetYPos();
-    }
-    if (Grid[0][1].GetContents() != nullptr) {
-      //  SDL_Log("\nGrid set correctly4\n");
-       // cout << "XPOS:" << Grid[0][1].GetContents()->GetXPos() << "\nYPOS:" << Grid[0][1].GetContents()->GetYPos();
-    }
 }
 bool Map::CheckForEndOfGame() {
     int NoOfTeams = 0;
@@ -240,7 +181,7 @@ vector<vector<int>> Map::GetStartingPositions(int StartY, int EndY,int NoOfUnits
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> PositionsY(StartY, EndY);
-    uniform_int_distribution<> PositionsX(0, Width);
+    uniform_int_distribution<> PositionsX(0, Width-1);
     for (int i = 0; i < NoOfUnits; i++) {
         int RandomX = PositionsX(gen); int RandomY = PositionsY(gen);
         while (CheckIfPosTaken(RandomX, RandomY, StartingPos)) {
