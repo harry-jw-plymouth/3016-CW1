@@ -53,17 +53,23 @@ int SquareSize = 40;
 int Game::GetCurrentPlayer() {
     return CurrentPlayer;
 }
+Unit* Game::GetCurrentlySelectedEnemy() {
+    return CurrentEnemy;
+}
+
+void Game::SetCurrentlySelectedEnemy(Unit* Selected) {
+    CurrentEnemy = Selected;
+}
 Unit* Game::GetCurrentlySelected() {
     return CurrentlySelected;
 }
+
 void Game::SetCurrentlySelected(Unit* Selected) {
     CurrentlySelected = Selected;
     if (Selected != nullptr) {
         CurrentlySelectedX = Selected->GetXPos();
         CurrentlySelectedY = Selected->GetYPos();
     }
-   
-
 }
 vector<int> Game::GetCurrentlySelectedPos() {
     return{ CurrentlySelectedX,CurrentlySelectedY };
@@ -810,19 +816,81 @@ void DrawGridWithAttackOptions() {
         }
     }
 }
-void DrawCurrentlySelected() {
-    SDL_FRect BackGround;
+void DrawEnemySelected() {
+    int GridStartX = ((WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2)+(GameMap.GetWidth()*SquareSize)+10 ;
+    SDL_FRect BackGround, TextBox, ImageBox;
     int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
-    SDL_SetRenderDrawColor(App.renderer, 0, 0, 200, 255);
-    BackGround.x = 100; BackGround.y = GridStartY; BackGround.w = 300; BackGround.h = SquareSize * GameMap.GetHeight();
+    int DisplayHeight = SquareSize * GameMap.GetHeight(); int DisplayWidth = 500;
+    SDL_SetRenderDrawColor(App.renderer, 255, 213, 130, 255);
+    BackGround.x = GridStartX;; BackGround.y = GridStartY; BackGround.w = DisplayWidth; BackGround.h = DisplayHeight;
     SDL_RenderFillRect(App.renderer, &BackGround);
 
+    if (GameInProgress->GetCurrentlySelectedEnemy() != nullptr) {
 
+        SDL_SetRenderDrawColor(App.renderer, 120, 200, 255, 255);
+        ImageBox.x = GridStartX + 50; ImageBox.y = GridStartY + 50; ImageBox.w = DisplayWidth - 100; ImageBox.h = DisplayWidth - 100;
+        SDL_RenderFillRect(App.renderer, &ImageBox);
+
+        SDL_SetRenderDrawColor(App.renderer, 130, 230, 255, 255);
+        TextBox.y = GridStartY + 100 + (DisplayWidth - 100); TextBox.x = GridStartX + 50; TextBox.w = DisplayWidth - 100; TextBox.h = DisplayHeight - (150 + (DisplayWidth - 100));
+        SDL_RenderFillRect(App.renderer, &TextBox);
+        vector<string>InfoLines;
+        InfoLines.push_back(GameInProgress->GetCurrentlySelectedEnemy()->GetName());
+        InfoLines.push_back("HP:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetHealth()));
+        InfoLines.push_back("Def:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetDefence()));
+        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetSpeed()));
+        InfoLines.push_back("Dex:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetDexterity()));
+        InfoLines.push_back("Weapon:" + GameInProgress->GetCurrentlySelectedEnemy()->GetWeapon()->GetName());
+        InfoLines.push_back("Str:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetWeapon()->GetStrength()));
+        SDL_Color TextColour = { 255,255,255 };
+        for (int i = 0; i < InfoLines.size(); i++) {
+            SDL_Surface* InfoSurface = TTF_RenderText_Blended(font, InfoLines[i].c_str(), InfoLines[i].size(), TextColour);
+            SDL_Texture* InfoTexture = SDL_CreateTextureFromSurface(App.renderer, InfoSurface);
+            SDL_FRect InfoRect;
+            InfoRect.x = GridStartX + 55; InfoRect.y = GridStartY + 105 + (DisplayWidth - 100) + i * InfoSurface->h; InfoRect.h = InfoSurface->h; InfoRect.w = InfoSurface->w;
+            SDL_RenderTexture(App.renderer, InfoTexture, nullptr, &InfoRect);
+        }
+    }
+}
+void DrawCurrentlySelected() {
+    SDL_FRect BackGround,TextBox, ImageBox;
+    int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    int StartX = 100; int DisplayHeight = SquareSize * GameMap.GetHeight(); int DisplayWidth = 500;
+    SDL_SetRenderDrawColor(App.renderer, 144, 213, 255, 255);
+    BackGround.x = StartX;; BackGround.y = GridStartY; BackGround.w = DisplayWidth; BackGround.h = DisplayHeight;
+    SDL_RenderFillRect(App.renderer, &BackGround);
+    if (GameInProgress->GetCurrentlySelected() != nullptr) {
+
+        SDL_SetRenderDrawColor(App.renderer, 120, 200, 255, 255);
+        ImageBox.x = StartX + 50; ImageBox.y = GridStartY + 50; ImageBox.w = DisplayWidth - 100; ImageBox.h = DisplayWidth - 100;
+        SDL_RenderFillRect(App.renderer, &ImageBox);
+
+        SDL_SetRenderDrawColor(App.renderer, 130, 230, 255, 255);
+        TextBox.y = GridStartY + 100 + (DisplayWidth - 100); TextBox.x = StartX + 50; TextBox.w = DisplayWidth - 100; TextBox.h = DisplayHeight - (150 + (DisplayWidth - 100));
+        SDL_RenderFillRect(App.renderer, &TextBox);
+        vector<string>InfoLines;
+        InfoLines.push_back(GameInProgress->GetCurrentlySelected()->GetName());
+        InfoLines.push_back("HP:" + to_string(GameInProgress->GetCurrentlySelected()->GetHealth()));
+        InfoLines.push_back("Def:" + to_string(GameInProgress->GetCurrentlySelected()->GetDefence()));
+        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelected()->GetSpeed()));
+        InfoLines.push_back("Dex:" + to_string(GameInProgress->GetCurrentlySelected()->GetDexterity()));
+        InfoLines.push_back("Weapon:" + GameInProgress->GetCurrentlySelected()->GetWeapon()->GetName());
+        InfoLines.push_back("Str:" + to_string(GameInProgress->GetCurrentlySelected()->GetWeapon()->GetStrength()));
+        SDL_Color TextColour = { 255,255,255 };
+        for (int i = 0; i < InfoLines.size(); i++) {
+            SDL_Surface* InfoSurface = TTF_RenderText_Blended(font, InfoLines[i].c_str(), InfoLines[i].size(), TextColour);
+            SDL_Texture* InfoTexture = SDL_CreateTextureFromSurface(App.renderer, InfoSurface);
+            SDL_FRect InfoRect;
+            InfoRect.x = StartX + 55; InfoRect.y = GridStartY + 105 + (DisplayWidth - 100)+i*InfoSurface->h; InfoRect.h =InfoSurface->h; InfoRect.w = InfoSurface->w;
+            SDL_RenderTexture(App.renderer, InfoTexture, nullptr, &InfoRect);
+        }
+    }      
 }
 void DrawGameScreenTemp() {
     SDL_SetRenderDrawColor(App.renderer, 175, 225, 175, 180);
     SDL_RenderClear(App.renderer);
     DrawCurrentlySelected();
+    DrawEnemySelected();
     if (GameInProgress->GetCurrentlySelected() == nullptr) {
         DrawGrid();
     }
@@ -1162,6 +1230,7 @@ int main()
                                     UpdateNeeded = true;
                                     MoveDone = false;
                                 }
+                                GameInProgress->SetCurrentlySelectedEnemy(nullptr);
                                 
                                 
 
@@ -1187,9 +1256,11 @@ int main()
                                 Temp->CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(Temp);
                                 UpdateNeeded = true;
-                                
-
-
+                            }
+                            else if ((Temp->GetTeam() != GameInProgress->GetCurrentPlayer())) {
+                                SDL_Log("Enemy Unit clicked");
+                                GameInProgress->SetCurrentlySelectedEnemy(Temp);
+                                UpdateNeeded = true;
                             }
                         }
                     }

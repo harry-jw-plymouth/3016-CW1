@@ -128,12 +128,17 @@ public:
 	int GetCurrentPlayer();
 	Unit* GetCurrentlySelected();
 	void SetCurrentlySelected(Unit* Selected);
+	Unit* GetCurrentlySelectedEnemy();
+	void SetCurrentlySelectedEnemy(Unit* Selected);
 	vector<int> GetCurrentlySelectedPos();
 	bool GetIfAllUnitsActivatedThisTurn(vector<Unit*> Units);
 	void UpdateTurn();
 	void SwapPlayers();
+
+
 private:
 	Unit* CurrentlySelected;
+	Unit* CurrentEnemy;
 	int Turn;
 	Player* P1;
 	Player* P2;
