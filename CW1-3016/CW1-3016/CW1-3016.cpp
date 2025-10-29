@@ -47,11 +47,21 @@ Game::Game(string P1Name, string P2Name) {
     P1 = new Player(P1Name,0); 
     P2 = new Player(P2Name,1);
     int CurrentPlayer = P1->GetPlayerId();
-
+    FrameCount = 0;
 }
+void Game::IncrementFrameCount() {
+    FrameCount++;
+}
+int Game::GetFrameCount() {
+    return FrameCount;
+}
+
 int SquareSize = 40;
 int Game::GetCurrentPlayer() {
     return CurrentPlayer;
+}
+int Game::GetTurn() {
+    return Turn;
 }
 Unit* Game::GetCurrentlySelectedEnemy() {
     return CurrentEnemy;
@@ -372,9 +382,7 @@ void Unit::CalculatePossibleAttacks() {
                     if(GameMap.GetContentsOfGrid(x,y)->GetTeam()!=Team){
                         CurrentAttacks.push_back({ x,y });
                         cout << "Adding:" << x << y << "\n";
-                    }
-
-                    
+                    }                    
                 }
             }
         }
@@ -431,7 +439,28 @@ Unit* Combat::GetAttacker() {
 Unit* Combat::GetDefender() {
     return Defender;
 }
+bool Combat::GetIfHits(int Dex, int Avo) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> Result(0, 100);
+    int HitChance = 75 + Dex - Avo;
+    if (Result(gen) > HitChance) {
+        return false;
+    }
+    return true;
+}
+struct SDL_App {
+    SDL_Window* window{ nullptr };
+    SDL_Renderer* renderer{ nullptr };
+    SDL_Event event;
+    bool IsRunning = true;
+    bool GameStart = false;
+};
+SDL_App App;
 string Combat::DoCombat() {
+    SDL_SetRenderDrawColor(App.renderer, 0, 0, 10, 150);
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    SDL_FRect Slash;
     int AttackerSpeed = Attacker->GetSpeed() + 3;
     string Result="";
     if (GetIfHits(Attacker->GetDexterity(),Defender->GetSpeed())) {
@@ -439,6 +468,9 @@ string Combat::DoCombat() {
         int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
         Defender->TakeDamage(Damage);
         Result += Defender->GetName() + " took " + to_string( Damage) + " from an attack from " + Attacker->GetName() + "\n";
+        Slash.h = 5; Slash.w = SquareSize - 10; Slash.x = GridStartX + Defender->GetXPos() * SquareSize + 5; Slash.y = GridStartY + Defender->GetYPos() * SquareSize+(SquareSize/2);
+        SDL_RenderFillRect(App.renderer, &Slash);
+        SDL_RenderPresent(App.renderer);
     }
     else {
         Result += Defender->GetName() + " dodges attack from " + Attacker->GetName()+"\n";
@@ -475,14 +507,9 @@ string Combat::DoCombat() {
 
         }
         return Result;
-
     }
-
-
 }
-bool Combat::GetIfHits(int Dex,int Avo) {
-    return true;
-}
+
 int Combat::GetDamage(int Str, int Def) {
     int Damage = Str - Def;
     if (Damage < 1) {
@@ -495,16 +522,9 @@ int Combat::GetDamage(int Str, int Def) {
 struct OptionBoxes {
     int x; int y; int h; int w;
 };
-struct SDL_App {
-    SDL_Window* window{ nullptr };
-    SDL_Renderer* renderer{ nullptr };
-    SDL_Event event;
-    bool IsRunning = true;
-    bool GameStart = false;
-};
+
 
 TTF_Font* font; TTF_Font* TitleFont;
-SDL_App App;
 const int TITLE_WINDOW_HEIGHT = 800;
 const int TITLE_WINDOW_WIDTH = 1200;
 
@@ -804,8 +824,6 @@ void DrawGridWithAttackOptions() {
                     SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
                 }
                 Targeted = false;
-
-
             }
         }
         if (LastRowStartedWithSquare) {
@@ -886,6 +904,15 @@ void DrawCurrentlySelected() {
         }
     }      
 }
+void RenderText() {
+    string StatusText = "Turn " + to_string(GameInProgress->GetTurn()) + "     player " + to_string(GameInProgress->GetCurrentPlayer()) + "'s activation";
+    SDL_Color TextColour = { 255,255,255 };
+    SDL_Surface* StatusSurface = TTF_RenderText_Blended(font, StatusText.c_str(), StatusText.size(), TextColour);
+    SDL_Texture* StatusTexture = SDL_CreateTextureFromSurface(App.renderer,StatusSurface);
+    SDL_FRect StatusRect;
+    StatusRect.x = WINDOW_WIDTH/2-(StatusTexture->w/2); StatusRect.y = 100 ; StatusRect.h = StatusSurface->h; StatusRect.w = StatusSurface->w;
+    SDL_RenderTexture(App.renderer, StatusTexture, nullptr, &StatusRect);
+}
 void DrawGameScreenTemp() {
     SDL_SetRenderDrawColor(App.renderer, 175, 225, 175, 180);
     SDL_RenderClear(App.renderer);
@@ -905,7 +932,7 @@ void DrawGameScreenTemp() {
         }
        
     }
-    
+    RenderText();
     RenderBorders(WINDOW_HEIGHT, WINDOW_WIDTH);
     SDL_RenderPresent(App.renderer);
 
@@ -1110,14 +1137,10 @@ int main()
                     App.GameStart = true;
                     App.IsRunning = false;
                     break;
-
-
                 default:
                     break;
                 }
-
             }
-
         }
         DrawTitleScreen();
         SDL_RenderPresent(App.renderer);
@@ -1145,22 +1168,17 @@ int main()
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
                  //   SDL_Log("Mouse clicked at %f %f",MouseX,MouseY);
                     CheckIfOptionsClicked(MouseX, MouseY);
-
                     break;
                 case SDL_EVENT_KEY_DOWN:
                     switch (App.event.key.key)
                     {
                     case SDLK_ESCAPE:
                         App.IsRunning = false;
-                        break;
-                    
-
+                        break;                    
                     default:
                         break;
                     }
-
                 }
-
             }
         }
     }
@@ -1173,6 +1191,7 @@ int main()
         App.IsRunning = true;
         while (App.IsRunning)
         {
+            GameInProgress->IncrementFrameCount();
             while (SDL_PollEvent(&App.event)) {
                 switch (App.event.type) {
                 case SDL_EVENT_QUIT:

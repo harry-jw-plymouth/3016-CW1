@@ -126,6 +126,7 @@ class Game {
 public:
 	Game(string P1Name,string P2Name);
 	int GetCurrentPlayer();
+	int GetTurn();
 	Unit* GetCurrentlySelected();
 	void SetCurrentlySelected(Unit* Selected);
 	Unit* GetCurrentlySelectedEnemy();
@@ -134,6 +135,8 @@ public:
 	bool GetIfAllUnitsActivatedThisTurn(vector<Unit*> Units);
 	void UpdateTurn();
 	void SwapPlayers();
+	int GetFrameCount();
+	void IncrementFrameCount();
 
 
 private:
@@ -145,6 +148,7 @@ private:
 	int CurrentPlayer;
 	int CurrentlySelectedX;
 	int CurrentlySelectedY;
+	int FrameCount;
 };
 
 
