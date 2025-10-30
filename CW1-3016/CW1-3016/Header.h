@@ -107,6 +107,7 @@ public:
 	Unit* GetDefender();
 	bool GetIfHits(int Dex,int Avo);
 	int GetDamage(int Str, int Def);
+	void DrawSlash(int x,int y);
 private:
 	Unit* Attacker;
 	Unit* Defender;

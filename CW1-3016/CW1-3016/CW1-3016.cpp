@@ -32,7 +32,7 @@ Sword::Sword(string Name, int Range, int Strength):Weapon(Name,Range,Strength) {
 
 vector<vector<int>> SquaresInRange;
 vector<Weapon> Weapons;
-Map GameMap(24, 24,5,4);
+Map GameMap(24, 24,2,4);
 bool MoveDone;
 
 Player::Player(string Name,int PlayerId) {
@@ -201,7 +201,7 @@ vector<vector<int>> Map::GetStartingPositions(int StartY, int EndY,int NoOfUnits
     for (int i = 0; i < NoOfUnits; i++) {
         int RandomX = PositionsX(gen); int RandomY = PositionsY(gen);
         while (CheckIfPosTaken(RandomX, RandomY, StartingPos)) {
-            int RandomX = PositionsX(gen); int RandomY = PositionsY(gen);
+            RandomX = PositionsX(gen); RandomY = PositionsY(gen);
         }
         StartingPos.push_back({ RandomX, RandomY });
     }
@@ -457,6 +457,76 @@ struct SDL_App {
     bool GameStart = false;
 };
 SDL_App App;
+void Combat::DrawSlash(int XPos,int YPos) {
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
+    SDL_SetRenderDrawColor(App.renderer, 120, 230, 180, 255);
+    SDL_FRect Slash;
+    SDL_FRect BackGround, GridSquare;
+    BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize; BackGround.h = SquareSize * GameMap.GetHeight();
+    SDL_RenderFillRect(App.renderer, &BackGround);
+
+    // SDL_Surface* Sprites;
+
+    string Path = std::string(SDL_GetBasePath()) + "assets/BlueSwordUnit.png";
+
+    SDL_Texture* SpriteTexture;
+    bool SpriteDrawn = false;
+    // SDL_DestroySurface(Sprites);
+    bool LastWasSquare = false, LastRowStartedWithSquare = false;
+    GridSquare.h = SquareSize; GridSquare.w = SquareSize;
+    SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+    for (int y = 0; y < GameMap.GetHeight(); y++) {
+        GridSquare.y = GridStartY + (y * SquareSize);
+        LastWasSquare = true;
+        if (!LastRowStartedWithSquare) {
+            LastWasSquare = false;
+        }
+        for (int x = 0; x < GameMap.GetWidth(); x++) {
+            if (!LastWasSquare) {
+                GridSquare.x = GridStartX + (x * SquareSize);
+                SDL_RenderFillRect(App.renderer, &GridSquare);
+                LastWasSquare = true;
+            }
+            else {
+                LastWasSquare = false;
+            }
+            if (GameMap.GetContentsOfGrid(x, y) != NULL) {
+                GridSquare.x = GridStartX + (x * SquareSize);
+                if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
+                    SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                }
+                else {
+                    SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetSpritePath()).c_str());
+                    if (!SpriteTexture) {
+                        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+                    }
+                    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+                    //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
+                    SpriteDrawn = true;
+                }
+
+                if (!SpriteDrawn) {
+                    SDL_RenderFillRect(App.renderer, &GridSquare);
+                }
+                SpriteDrawn = false;
+                SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
+                
+            }
+        }
+        if (XPos != -1) {
+            SDL_SetRenderDrawColor(App.renderer, 0, 0, 10, 150);
+            Slash.h = 5; Slash.w = SquareSize - 10; Slash.x = GridStartX + XPos * SquareSize + 5; Slash.y = GridStartY + YPos * SquareSize + (SquareSize / 2);
+            SDL_RenderFillRect(App.renderer, &Slash);
+            SDL_RenderPresent(App.renderer);
+        }
+        if (LastRowStartedWithSquare) {
+            LastRowStartedWithSquare = false;
+        }
+        else {
+            LastRowStartedWithSquare = true;
+        }
+    }
+}
 string Combat::DoCombat() {
     SDL_SetRenderDrawColor(App.renderer, 0, 0, 10, 150);
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
@@ -468,13 +538,13 @@ string Combat::DoCombat() {
         int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
         Defender->TakeDamage(Damage);
         Result += Defender->GetName() + " took " + to_string( Damage) + " from an attack from " + Attacker->GetName() + "\n";
-        Slash.h = 5; Slash.w = SquareSize - 10; Slash.x = GridStartX + Defender->GetXPos() * SquareSize + 5; Slash.y = GridStartY + Defender->GetYPos() * SquareSize+(SquareSize/2);
-        SDL_RenderFillRect(App.renderer, &Slash);
-        SDL_RenderPresent(App.renderer);
+        DrawSlash(Defender->GetXPos(), Defender->GetYPos());
+        SDL_Delay(50);
+        DrawSlash(-1, -1);
+        SDL_Delay(50);
     }
     else {
         Result += Defender->GetName() + " dodges attack from " + Attacker->GetName()+"\n";
-
     }
     if (Defender->GetHealth() > 0) {
         if (GetIfHits(Defender->GetDexterity(), AttackerSpeed)) {
@@ -482,6 +552,10 @@ string Combat::DoCombat() {
             int Damage = GetDamage(Defender->GetWeapon()->GetStrength(), Attacker->GetDefence());
             Attacker->TakeDamage(Damage);
             Result += Defender->GetName() + " Counters for " + to_string(Damage) + " damage \n";
+            DrawSlash(Attacker->GetXPos(), Attacker->GetYPos());
+            SDL_Delay(50);
+            DrawSlash(-1, -1);
+            SDL_Delay(50);
         }
         else {
             Result += Attacker->GetName() + " dodges attack from " + Defender->GetName() + "\n";
@@ -494,6 +568,10 @@ string Combat::DoCombat() {
             int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
             Defender->TakeDamage(Damage);
             Result += Defender->GetName() + " took " + to_string(Damage) + "\n";
+            DrawSlash(Defender->GetXPos(), Defender->GetYPos());
+            SDL_Delay(50);
+            DrawSlash(-1, -1);
+            SDL_Delay(50);
         }
         else {
             Result += Defender->GetName() + " dodges the attack " + "\n";
@@ -692,8 +770,6 @@ void DrawGrid() {
                 }
                 SpriteDrawn = false;
                 SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
-
-
             }
         }
         if (LastRowStartedWithSquare) {
@@ -702,67 +778,7 @@ void DrawGrid() {
         else {
             LastRowStartedWithSquare = true;
         }
-        
-
     }
-
-
-   // if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == 0) {
- //       if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
-     //       SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
-       // }
-  //      else {
-    //        SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetSpritePath()).c_str());
-      //      if (!SpriteTexture) {
-        //        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
-          //  }
-         //   SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
-            //  SDL_SetRenderDrawColor(App.renderer, 0, 0, 255, 255);
-           // SpriteDrawn = true;
-       // }
-   // }
-   // else {
-   //     SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
-
-   // }
-
-  //  GridSquare.h = SquareSize; GridSquare.w = SquareSize;
-   // SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
-    //for (int y = 0; y < MainGrid.Height; y+=2) {
-      //  GridSquare.y = GridStartY + (y *  SquareSize);
-        //for (int x = 0; x < MainGrid.Width; x+=2) {
-          //  GridSquare.x = GridStartX + (x * SquareSize);
-           // SDL_RenderFillRect(App.renderer, &GridSquare);
-            //cout<<GameMap.GetContentsOfGrid(x, y);
-           // if (GameMap.GetContentsOfGrid(x, y) == NULL) {
-                // SDL_Log("Square empty");
-           // }
-           // else {
-             //   SDL_Log(" SQaure contains unit :");
-            //}
-            
-      //  }
-    //}
-    //for (int y = 1; y < MainGrid.Height; y += 2) {
-      //  GridSquare.y = GridStartY + (y * SquareSize);
-        //for (int x = 1; x < MainGrid.Width; x += 2) {
-          //  GridSquare.x = GridStartX + (x * SquareSize);
-            //SDL_RenderFillRect(App.renderer, &GridSquare);
-         //   if (GameMap.GetContentsOfGrid(x, y) == NULL) {
-                // SDL_Log("Square empty");
-          //  }
-            //else {
-             //   SDL_Log(" SQaure contains unit :");
-               // SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
-
-                //SDL_RenderFillRect(App.renderer, &GridSquare);
-
-                //SDL_SetRenderDrawColor(App.renderer, 223, 255, 0, 255);
-
-//            }
-  //      }
-//    }
-
 }
 void DrawGridWithAttackOptions() {
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
