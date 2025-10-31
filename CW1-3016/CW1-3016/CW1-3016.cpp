@@ -25,6 +25,9 @@ int Weapon::GetStrength() {
 int Weapon::GetRange() {
     return Range;
 }
+Spear:: Spear(string Name, int Range, int Strength) :Weapon(Name, Range, Strength) {
+    cout << "Making spear\n";
+}
 Sword::Sword(string Name, int Range, int Strength):Weapon(Name,Range,Strength) {
     cout << "Making sword\n";
 }
@@ -161,7 +164,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
     //cout << "Setup units \n";
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> UnitType(0, 1);
+    uniform_int_distribution<> UnitType(0, 2);
     int RandomSelection;
     Unit* BlueUnit;
     for (int i = 0; i < Team1Positions.size(); i++) {
@@ -170,8 +173,8 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
            // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,10), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png");
-            BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
+            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,9), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png");
+            BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
             AddUnitToGrid(Grid[Team1Positions[i][0]][Team1Positions[i][1]].GetContents());
@@ -181,12 +184,19 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         else if (RandomSelection == 1) {
            // cout << "Setting up archer \n";
             BlueUnit= new Unit(("Blue Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 0, GetRandomStat(8, 15),3, "assets/BlueArcherUnit.png");
-            BlueUnit->SetWeapon(new Weapon("Iron Bow", 3, 7));
+            BlueUnit->SetWeapon(new Weapon("Iron Bow", 6, 10));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
          //   cout << "Grid right after placing " << Grid[Team1Positions[i][0]][Team1Positions[i][1]].GetContents() << "\n";
             AddUnitToGrid(Grid[Team1Positions[i][0]][Team1Positions[i][1]].GetContents());
            // cout << "Contents of square: " << GetContentsOfGrid(Team1Positions[i][0], Team1Positions[i][1])->GetName()<<"\n";
+        }
+        else if (RandomSelection == 2) {
+            BlueUnit = new Unit(("Blue Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 0, GetRandomStat(6, 11), 8, "assets/BlueKnightUnit.png");
+            BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
+            BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
+            Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
+            AddUnitToGrid(Grid[Team1Positions[i][0]][Team1Positions[i][1]].GetContents());
         }
      }
     for (int i = 0; i < Team2Positions.size(); i++) {
@@ -199,8 +209,8 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
             // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3, 10), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png");
-            BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
+            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3,9), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png");
+            BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
             AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
@@ -210,7 +220,14 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         else if (RandomSelection == 1) {
             // cout << "Setting up archer \n";
             BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png");
-            BlueUnit->SetWeapon(new Weapon("Iron Bow", 3, 7));
+            BlueUnit->SetWeapon(new Weapon("Iron Bow", 6, 10));
+            BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
+            Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
+            AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
+        }
+        else if (RandomSelection == 2) {
+            BlueUnit = new Unit(("Red Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 1, GetRandomStat(6, 11), 8, "assets/RedKnightUnit.png");
+            BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
             AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());

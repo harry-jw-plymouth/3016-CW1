@@ -27,6 +27,10 @@ class Bow :virtual public Weapon {
 public:
 	Bow(string Name, int Range, int Strength);
 };
+class Spear : virtual public Weapon {
+public:
+	Spear(string Name, int Range, int Strength);
+};
 class Unit {
 public:
 	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed,string Path);
