@@ -133,6 +133,13 @@ Unit* Square::GetContents() {
 } 
 
 bool UpdateNeeded = true;
+int Map::GetRandomStat(int Lower, int Upper) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> UnitStat(Lower, Upper);
+    return UnitStat(gen);
+
+}
 Map::Map(int x,int y,int Units,int DeplomentZone){
     CreateWeapons();
     vector<Square>Temp;
@@ -163,7 +170,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
            // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Blue Duelist" + to_string(i)), 10, 5, 10, 0, 4, "assets/BlueSwordUnit.png");
+            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,10), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -173,7 +180,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         }
         else if (RandomSelection == 1) {
            // cout << "Setting up archer \n";
-            BlueUnit= new Unit(("Blue Archer" + to_string(i)), 30, 5, 10, 0, 3, "assets/BlueArcherUnit.png");
+            BlueUnit= new Unit(("Blue Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 0, GetRandomStat(8, 15),3, "assets/BlueArcherUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Bow", 3, 7));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -192,7 +199,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
             // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Red Duelist" + to_string(i)), 10, 5, 10, 1, 4, "assets/RedSwordUnit.png");
+            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3, 10), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 10));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -202,7 +209,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         }
         else if (RandomSelection == 1) {
             // cout << "Setting up archer \n";
-            BlueUnit = new Unit(("Red Archer" + to_string(i)), 30, 5, 10, 1, 3, "assets/RedArcherUnit.png");
+            BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Bow", 3, 7));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -344,16 +351,20 @@ void Map::SetAllUnitsToUnactivated() {
     //}
 }
 
-Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Speed, string Path) {
+Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed, string Path) {
     this->Name = Name;
     this->Health = Health;
     this->Team = Team;
     this->Speed = Speed;
     this->Dexterity = Dexterity;
+    this->Swiftness = Swiftness;
     UsedThisTurn = false;
     this->Defence = Defence;
     SpritePath= string(SDL_GetBasePath()) + Path;
 
+}
+int Unit::GetSwiftness() {
+    return Swiftness;
 }
 int Unit::GetHealth() {
     return Health;
@@ -591,9 +602,9 @@ string Combat::DoCombat() {
     SDL_SetRenderDrawColor(App.renderer, 0, 0, 10, 150);
     int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = (WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2;
     SDL_FRect Slash;
-    int AttackerSpeed = Attacker->GetSpeed() + 3;
+    int AttackerSpeed = Attacker->GetSwiftness() + 6;
     string Result="";
-    if (GetIfHits(Attacker->GetDexterity(),Defender->GetSpeed())) {
+    if (GetIfHits(Attacker->GetDexterity(),Defender->GetSwiftness())) {
 
         int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
         Defender->TakeDamage(Damage);
@@ -627,9 +638,9 @@ string Combat::DoCombat() {
         }
         
     }
-    if (Attacker->GetHealth() > 0 && AttackerSpeed>Defender->GetSpeed()+5) {
+    if (Attacker->GetHealth() > 0 && AttackerSpeed>Defender->GetSwiftness()+5) {
         Result += Attacker->GetName() + " gets attempts a vantage attack \n";
-        if (GetIfHits(Attacker->GetDexterity(), Defender->GetSpeed())) {
+        if (GetIfHits(Attacker->GetDexterity(), Defender->GetSwiftness())) {
 
             int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
             Defender->TakeDamage(Damage);
@@ -938,7 +949,7 @@ void DrawEnemySelected() {
         InfoLines.push_back(GameInProgress->GetCurrentlySelectedEnemy()->GetName());
         InfoLines.push_back("HP:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetHealth()));
         InfoLines.push_back("Def:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetDefence()));
-        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetSpeed()));
+        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetSwiftness()));
         InfoLines.push_back("Dex:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetDexterity()));
         InfoLines.push_back("Weapon:" + GameInProgress->GetCurrentlySelectedEnemy()->GetWeapon()->GetName());
         InfoLines.push_back("Str:" + to_string(GameInProgress->GetCurrentlySelectedEnemy()->GetWeapon()->GetStrength()));
@@ -972,7 +983,7 @@ void DrawCurrentlySelected() {
         InfoLines.push_back(GameInProgress->GetCurrentlySelected()->GetName());
         InfoLines.push_back("HP:" + to_string(GameInProgress->GetCurrentlySelected()->GetHealth()));
         InfoLines.push_back("Def:" + to_string(GameInProgress->GetCurrentlySelected()->GetDefence()));
-        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelected()->GetSpeed()));
+        InfoLines.push_back("Spd:" + to_string(GameInProgress->GetCurrentlySelected()->GetSwiftness()));
         InfoLines.push_back("Dex:" + to_string(GameInProgress->GetCurrentlySelected()->GetDexterity()));
         InfoLines.push_back("Weapon:" + GameInProgress->GetCurrentlySelected()->GetWeapon()->GetName());
         InfoLines.push_back("Str:" + to_string(GameInProgress->GetCurrentlySelected()->GetWeapon()->GetStrength()));
@@ -1268,7 +1279,7 @@ int main()
     MoveDone = false;
     GameInProgress = new Game("Player1", "Player2");
     GameInProgress->SetCurrentlySelected(nullptr);
-    Unit Temp=Unit("",0,0,0,0,0,"");
+    Unit Temp=Unit("",0,0,0,0,0,0,"");
     if (App.GameStart) {
         App.IsRunning = true;
         while (App.IsRunning)

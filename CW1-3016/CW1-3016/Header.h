@@ -29,11 +29,12 @@ public:
 };
 class Unit {
 public:
-	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Speed,string Path);
+	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed,string Path);
 	string GetName();
 	int GetDexterity();
 	int GetDefence();
 	int GetSpeed();
+	int GetSwiftness();
 	int GetHealth();
 	//int GetStrength();
 	int GetTeam();
@@ -64,6 +65,7 @@ private:
 	int Team;
 	int XPos;
 	int YPos;
+	int Swiftness;
 	int Defence;
 };
 
@@ -95,6 +97,7 @@ public:
 	int GetVictor();
 	vector<vector<int>>GetStartingPositions(int StartY, int EndY,int NoOfUnits);
 	bool CheckIfPosTaken(int X, int Y, vector<vector<int>> Positions);
+	int GetRandomStat(int Lower, int Upper);
 
 private:
 	vector<vector<Square>>Grid;
