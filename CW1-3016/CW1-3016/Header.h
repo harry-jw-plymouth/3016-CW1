@@ -23,6 +23,10 @@ class Sword:virtual public Weapon {
 public:
 	Sword(string Name, int Range, int Strength);
 };
+class Bow :virtual public Weapon {
+public:
+	Bow(string Name, int Range, int Strength);
+};
 class Unit {
 public:
 	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Speed,string Path);
@@ -108,6 +112,7 @@ public:
 	bool GetIfHits(int Dex,int Avo);
 	int GetDamage(int Str, int Def);
 	void DrawSlash(int x,int y);
+	int GetRange();
 private:
 	Unit* Attacker;
 	Unit* Defender;
