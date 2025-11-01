@@ -33,7 +33,7 @@ public:
 };
 class Unit {
 public:
-	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed,string Path);
+	Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed,string Path,string UsedPath);
 	string GetName();
 	int GetDexterity();
 	int GetDefence();
@@ -53,12 +53,14 @@ public:
 	void SetUsed(bool Status);
 	void SetWeapon(Weapon* weapon);
 	string GetSpritePath();
+	string GetUsedSpritePath();
 	Weapon* GetWeapon();
 	void TakeDamage(int Damage);
 
 private:
 	int Dexterity;
 	string SpritePath;
+	string UsedSpritePath;
 	Weapon* EquippedWeapon;
 	bool UsedThisTurn;
 	vector<vector<int>>CurrentAttacks;

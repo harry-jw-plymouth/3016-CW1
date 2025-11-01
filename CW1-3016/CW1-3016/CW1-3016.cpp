@@ -173,7 +173,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
            // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,9), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png");
+            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,9), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png", "assets/BlueSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -183,7 +183,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         }
         else if (RandomSelection == 1) {
            // cout << "Setting up archer \n";
-            BlueUnit= new Unit(("Blue Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 0, GetRandomStat(8, 15),3, "assets/BlueArcherUnit.png");
+            BlueUnit= new Unit(("Blue Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 0, GetRandomStat(8, 15),3, "assets/BlueArcherUnit.png", "assets/UsedBlueArcherUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Bow", 6, 10));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -192,7 +192,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
            // cout << "Contents of square: " << GetContentsOfGrid(Team1Positions[i][0], Team1Positions[i][1])->GetName()<<"\n";
         }
         else if (RandomSelection == 2) {
-            BlueUnit = new Unit(("Blue Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 0, GetRandomStat(6, 11), 8, "assets/BlueKnightUnit.png");
+            BlueUnit = new Unit(("Blue Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 0, GetRandomStat(6, 11), 8, "assets/BlueKnightUnit.png", "assets/BlueKnightUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -209,7 +209,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
             // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3,9), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png");
+            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3,9), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png", "assets/RedSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -219,14 +219,14 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         }
         else if (RandomSelection == 1) {
             // cout << "Setting up archer \n";
-            BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png");
+            BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png", "assets/RedArcherUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Bow", 6, 10));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
             AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
         }
         else if (RandomSelection == 2) {
-            BlueUnit = new Unit(("Red Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 1, GetRandomStat(6, 11), 8, "assets/RedKnightUnit.png");
+            BlueUnit = new Unit(("Red Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 1, GetRandomStat(6, 11), 8, "assets/RedKnightUnit.png", "assets/RedKnightUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -368,7 +368,7 @@ void Map::SetAllUnitsToUnactivated() {
     //}
 }
 
-Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed, string Path) {
+Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftness,int Speed, string Path,string UsedPath) {
     this->Name = Name;
     this->Health = Health;
     this->Team = Team;
@@ -378,7 +378,11 @@ Unit::Unit(string Name,int Dexterity,int Defence, int Health,int Team,int Swiftn
     UsedThisTurn = false;
     this->Defence = Defence;
     SpritePath= string(SDL_GetBasePath()) + Path;
+    UsedSpritePath = string(SDL_GetBasePath()) + UsedPath;
 
+}
+string Unit::GetUsedSpritePath() {
+    return UsedSpritePath;
 }
 int Unit::GetSwiftness() {
     return Swiftness;
@@ -868,7 +872,12 @@ void DrawGrid() {
             if (GameMap.GetContentsOfGrid(x,y)!=NULL ) {
                 GridSquare.x = GridStartX + (x * SquareSize);
                 if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
-                    SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                    SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetUsedSpritePath()).c_str());
+                    if (!SpriteTexture) {
+                        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+                    }
+                    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+                    SpriteDrawn = true;
                 }
                 else {
                     SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetSpritePath()).c_str());
@@ -941,8 +950,15 @@ void DrawGridWithAttackOptions() {
                     if (GameMap.GetContentsOfGrid(x, y)->GetTeam() == GameInProgress->GetCurrentPlayer()) {
                         if (GameMap.GetContentsOfGrid(x, y)->GetIfUsedThisTurn()) {
                             // current player, unit used
+                            SpriteTexture = IMG_LoadTexture(App.renderer, (GameMap.GetContentsOfGrid(x, y)->GetUsedSpritePath()).c_str());
+                            if (!SpriteTexture) {
+                                SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+                            }
+                            SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &GridSquare);
+                            SpriteDrawn = true;
+                            SDL_SetRenderDrawColor(App.renderer, 255, 0, 0, 255);
 
-                            SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
+                           // SDL_SetRenderDrawColor(App.renderer, 69, 129, 142, 255);
                         }
                         else {
                             // current player, unit not used
@@ -1167,24 +1183,40 @@ void DrawOptions() {
     OptionSquare.y = Vertical_Gap;
     OptionSquare.w = OptionWidth;
     OptionSquare.h = TITLE_WINDOW_HEIGHT - (Vertical_Gap * 2);
+    string BattlePath = string(SDL_GetBasePath()) + "assets/Battle.png";
+    string WarPath = string(SDL_GetBasePath()) + "assets/War.png";
     string skirmishPath = string(SDL_GetBasePath()) + "assets/skirmish.png";
-    SpriteTexture = IMG_LoadTexture(App.renderer, skirmishPath.c_str());
-    if (!SpriteTexture) {
-        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
-    }
-    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &OptionSquare);
+
+    string StatusText = "Select game size";
+    SDL_Color TextColour = { 255,255,255 };
+    SDL_Surface* StatusSurface = TTF_RenderText_Blended(font, StatusText.c_str(), StatusText.size(), TextColour);
+    SDL_Texture* StatusTexture = SDL_CreateTextureFromSurface(App.renderer, StatusSurface);
+    SDL_FRect StatusRect;
+    StatusRect.x = 480; StatusRect.y = 100; StatusRect.h = StatusSurface->h; StatusRect.w = StatusSurface->w;
+    SDL_RenderTexture(App.renderer, StatusTexture, nullptr, &StatusRect);
 
 
     SDL_RenderFillRect(App.renderer, &OptionSquare);
-    for (int i = 2; i < NoOfOptions; i++) {
+    for (int i = 0; i < NoOfOptions; i++) {
         SDL_SetRenderDrawColor(App.renderer, 0, 255, 0, 255);
         OptionSquare.x = EdgeGap+(OptionWidth*i)+(Gap*i);
         OptionSquare.y = Vertical_Gap; 
         OptionSquare.w =OptionWidth; 
         OptionSquare.h = TITLE_WINDOW_HEIGHT - (Vertical_Gap * 2);
-        cout << " Width  "<< OptionWidth<<"\n";
-        cout << " Height " << TITLE_WINDOW_HEIGHT - (Vertical_Gap * 2) << "\n";
         SDL_RenderFillRect(App.renderer, &OptionSquare);
+        if (i == 0) {
+            SpriteTexture = IMG_LoadTexture(App.renderer, skirmishPath.c_str());
+        }
+        else if (i == 1) {
+            SpriteTexture = IMG_LoadTexture(App.renderer, BattlePath.c_str());
+        }
+        else {
+            SpriteTexture = IMG_LoadTexture(App.renderer, WarPath.c_str());
+        }
+        if (!SpriteTexture) {
+            SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+        }
+        SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &OptionSquare);
         Temp.x = OptionSquare.x; Temp.y = OptionSquare.y; Temp.w = OptionSquare.w; Temp.h = OptionSquare.h;
   //      OptionPos.push_back(Temp);
     }
@@ -1372,7 +1404,7 @@ int main()
     MoveDone = false;
     GameInProgress = new Game("Player1", "Player2");
     GameInProgress->SetCurrentlySelected(nullptr);
-    Unit Temp=Unit("",0,0,0,0,0,0,"");
+    Unit Temp=Unit("",0,0,0,0,0,0,"","");
     if (App.GameStart) {
         App.IsRunning = true;
         while (App.IsRunning)

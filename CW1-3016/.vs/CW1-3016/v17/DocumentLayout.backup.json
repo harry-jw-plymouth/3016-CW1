@@ -38,7 +38,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 287,
+          "DockedWidth": 391,
           "SelectedChildIndex": 2,
           "Children": [
             {
@@ -65,7 +65,7 @@
               "RelativeDocumentMoniker": "CW1-3016\\CW1-3016.cpp",
               "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
               "RelativeToolTip": "CW1-3016\\CW1-3016.cpp",
-              "ViewState": "AgIAAFAFAAAAAAAAAAAwwFoFAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAJQEAAAAAAAAAAAUwKMEAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-10T16:38:27.694Z",
               "EditorCaption": ""
@@ -145,7 +145,7 @@
           ]
         },
         {
-          "DockedWidth": 113,
+          "DockedWidth": 9,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -156,7 +156,7 @@
               "RelativeDocumentMoniker": "CW1-3016\\Header.h",
               "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\Header.h",
               "RelativeToolTip": "CW1-3016\\Header.h",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAABRwCMAAAB0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-10-10T16:38:28.718Z",
               "EditorCaption": ""
