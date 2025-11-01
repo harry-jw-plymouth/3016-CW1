@@ -173,7 +173,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
            // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,9), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png", "assets/BlueSwordUnit.png");
+            BlueUnit = new Unit(("Blue Duelist " + to_string(i)), GetRandomStat(9,20), GetRandomStat(3,9), GetRandomStat(9,16), 0, GetRandomStat(9,25), 4, "assets/BlueSwordUnit.png", "assets/UsedBlueSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -192,7 +192,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
            // cout << "Contents of square: " << GetContentsOfGrid(Team1Positions[i][0], Team1Positions[i][1])->GetName()<<"\n";
         }
         else if (RandomSelection == 2) {
-            BlueUnit = new Unit(("Blue Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 0, GetRandomStat(6, 11), 8, "assets/BlueKnightUnit.png", "assets/BlueKnightUnit.png");
+            BlueUnit = new Unit(("Blue Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 0, GetRandomStat(6, 11), 8, "assets/BlueKnightUnit.png", "assets/UsedBlueKnightUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
             BlueUnit->UpdatePosition(Team1Positions[i][0], Team1Positions[i][1]);
             Grid[Team1Positions[i][0]][Team1Positions[i][1]].SetContents(BlueUnit);
@@ -219,14 +219,14 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         }
         else if (RandomSelection == 1) {
             // cout << "Setting up archer \n";
-            BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png", "assets/RedArcherUnit.png");
+            BlueUnit = new Unit(("Red Archer" + to_string(i)), GetRandomStat(20, 50), GetRandomStat(3, 8), GetRandomStat(8, 14), 1, GetRandomStat(8, 15),3, "assets/RedArcherUnit.png", "assets/UsedRedArcherUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Bow", 6, 10));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
             AddUnitToGrid(Grid[Team2Positions[i][0]][Team2Positions[i][1]].GetContents());
         }
         else if (RandomSelection == 2) {
-            BlueUnit = new Unit(("Red Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 1, GetRandomStat(6, 11), 8, "assets/RedKnightUnit.png", "assets/RedKnightUnit.png");
+            BlueUnit = new Unit(("Red Knight" + to_string(i)), GetRandomStat(10, 20), GetRandomStat(5, 10), GetRandomStat(10, 18), 1, GetRandomStat(6, 11), 8, "assets/RedKnightUnit.png", "assets/UsedRedKnightUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Spear", 2, 11));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -554,7 +554,7 @@ void Combat::DrawSlash(int XPos,int YPos) {
         LastWasSquare = true;
         if (!LastRowStartedWithSquare) {
             LastWasSquare = false;
-        }
+        }   
         for (int x = 0; x < GameMap.GetWidth(); x++) {
             if (!LastWasSquare) {
                 GridSquare.x = GridStartX + (x * SquareSize);
@@ -708,6 +708,7 @@ const int TITLE_WINDOW_WIDTH = 1200;
 int TITLEFONT_SIZE=80;
 int FONT_SIZE = 30;
 vector<OptionBoxes> OptionPos;
+vector<string>Updates;
 
 void DrawTitleScreenText() {
     const SDL_Rect* dstrect;
@@ -741,10 +742,18 @@ void RenderBorders(int H, int W) {
 
 }
 void DrawTitleScreen() {
+    SDL_FRect TitleImage;
+    TitleImage.x = 0; TitleImage.y = 0; TitleImage.h = TITLE_WINDOW_HEIGHT; TitleImage.w = TITLE_WINDOW_WIDTH;
     SDL_SetRenderDrawColor(App.renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_RenderClear(App.renderer);
-    DrawTitleScreenText();
-    RenderBorders(TITLE_WINDOW_HEIGHT,TITLE_WINDOW_WIDTH);
+    string TitleScreenPath=  string(SDL_GetBasePath()) + "assets/TitleScreen.png";
+    SDL_Texture* SpriteTexture = IMG_LoadTexture(App.renderer, TitleScreenPath.c_str());
+    if (!SpriteTexture) {
+        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+    }
+    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &TitleImage);
+    //SDL_RenderClear(App.renderer);
+    //DrawTitleScreenText();
+   // RenderBorders(TITLE_WINDOW_HEIGHT,TITLE_WINDOW_WIDTH);
     SDL_RenderPresent(App.renderer);
 }
 void DrawGridWithMoveOptions() {
@@ -1036,6 +1045,13 @@ void DrawEnemySelected() {
         }
     }
 }
+void DrawUpdateBox() {
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = ((WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2 + (SquareSize * GameMap.GetHeight())) + 10;
+    SDL_SetRenderDrawColor(App.renderer, 120, 230, 180, 255);
+    SDL_FRect BackGround, GridSquare;
+    BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize; BackGround.h = 125;
+    SDL_RenderFillRect(App.renderer, &BackGround);
+}
 void DrawCurrentlySelected() {
     SDL_Texture* SpriteTexture;
     SDL_FRect BackGround,TextBox, ImageBox;
@@ -1090,6 +1106,7 @@ void DrawGameScreenTemp() {
     SDL_RenderClear(App.renderer);
     DrawCurrentlySelected();
     DrawEnemySelected();
+    DrawUpdateBox();
     if (GameInProgress->GetCurrentlySelected() == nullptr) {
         DrawGrid();
     }
@@ -1135,11 +1152,11 @@ vector<int> CheckIfMoveOptionClicked(int MouseX,int MouseY) {
     return { -1,-1 };
 }
 bool CreateApp() {
+   // if ((App.window = SDL_CreateWindow("TitleScreen", TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, 0)) == nullptr) {
+     //   SDL_Quit();
+       // return false;
+    //}
     if ((App.window = SDL_CreateWindow("TitleScreen", TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, 0)) == nullptr) {
-        SDL_Quit();
-        return false;
-    }
-    if ((App.window = SDL_CreateWindow("Grid", TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, 0)) == nullptr) {
         SDL_Quit();
         return false;
     }
@@ -1303,11 +1320,7 @@ vector<int> GetPosClicked(int MouseX,int MouseY) {
 
 
 int main()
-{
-    SDL_Log("Using SDL version %d.%d.%d", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_MICRO_VERSION);
-    SDL_Log("Using SDL_image version %d.%d.%d", SDL_IMAGE_MAJOR_VERSION, SDL_IMAGE_MINOR_VERSION, SDL_IMAGE_MICRO_VERSION);
-    SDL_Log("Running");
-   
+{  
     if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == 0) {
         return -1;
     }
@@ -1329,11 +1342,9 @@ int main()
         return 1;
     }
 
+    bool Drawn = false;
     CreateWeapons();
     SDL_Color color = { 255, 255, 255 };
-   // SDL_Surface* surface = TTF_RenderText_Solid(font, "Hello SDL_ttf!", 24,color);
-  //  SDL_Texture* texture = SDL_CreateTextureFromSurface(App.renderer, surface);
-   // OpenTitleScreen();
     while (App.IsRunning) 
     {
         while (SDL_PollEvent(&App.event)) {
@@ -1356,14 +1367,17 @@ int main()
                 }
             }
         }
-        DrawTitleScreen();
-        SDL_RenderPresent(App.renderer);
+        if (!Drawn) {
+            DrawTitleScreen();
+            SDL_RenderPresent(App.renderer);
+            Drawn = true;
+        }
         SDL_Delay(10);
 
     }
     SDL_RenderClear(App.renderer);
     float MouseX = 0; float MouseY = 0;
-    bool Drawn = false;
+    Drawn = false;
     SetOptionsPos();
     if (App.GameStart){
         App.IsRunning = true;
@@ -1383,7 +1397,6 @@ int main()
                     break;
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
-                 //   SDL_Log("Mouse clicked at %f %f",MouseX,MouseY);
                     CheckIfOptionsClicked(MouseX, MouseY);
                     break;
                 case SDL_EVENT_KEY_DOWN:
@@ -1474,9 +1487,6 @@ int main()
                                     MoveDone = false;
                                 }
                                 GameInProgress->SetCurrentlySelectedEnemy(nullptr);
-                                
-                                
-
                                 GameInProgress->SwapPlayers();
                                 if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
                                     GameInProgress->SwapPlayers();
@@ -1487,8 +1497,7 @@ int main()
                                     }
                                 }
                             }
-                        }
-                        
+                        }             
                     }
                     else {
                         Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
@@ -1511,10 +1520,7 @@ int main()
                                 UpdateNeeded = true;
                             }
                         }
-                       
-
                     }
-
                     break;
                 case SDL_EVENT_KEY_DOWN:
                     switch (App.event.key.key)
@@ -1522,16 +1528,11 @@ int main()
                     case SDLK_ESCAPE:
                         App.IsRunning = false;
                         break;
-
-
                     default:
                         break;
                     }
-
                 }
-
             }
-
             SDL_RenderClear(App.renderer);
             if (UpdateNeeded) {
                 DrawGameScreenTemp();
@@ -1539,22 +1540,10 @@ int main()
                 UpdateNeeded = false;
             }
             SDL_Delay(10);
-        }
-      
+        }  
     }
 
     cout << " Game over\n";
     cout << "Team " << GameMap.GetVictor()<< "won! \n";
     std::cout << "Game Shut down!\n";
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
