@@ -55,6 +55,17 @@ Game::Game(string P1Name, string P2Name) {
     int CurrentPlayer = P1->GetPlayerId();
     FrameCount = 0;
 }
+vector<string> Game::GetUpdates() {
+    vector<string> Temp;
+    for (int i = 0; i < Updates.size(); i++) {
+        Temp.push_back(Updates[i]);
+    }
+    Updates.clear();
+    return Temp;
+}
+void Game::AddUpdate(string New) {
+    Updates.push_back(New);
+}
 void Game::IncrementFrameCount() {
     FrameCount++;
 }
@@ -209,7 +220,7 @@ Map::Map(int x,int y,int Units,int DeplomentZone){
         RandomSelection = UnitType(gen);
         if (RandomSelection == 0) {
             // cout << "Setting up Duelist \n";
-            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3,9), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png", "assets/RedSwordUnit.png");
+            BlueUnit = new Unit(("Red Duelist" + to_string(i)), GetRandomStat(9, 20), GetRandomStat(3,9), GetRandomStat(9, 16), 1, GetRandomStat(9, 25),4, "assets/RedSwordUnit.png", "assets/UsedRedSwordUnit.png");
             BlueUnit->SetWeapon(new Weapon("Iron Sword", 1, 14));
             BlueUnit->UpdatePosition(Team2Positions[i][0], Team2Positions[i][1]);
             Grid[Team2Positions[i][0]][Team2Positions[i][1]].SetContents(BlueUnit);
@@ -630,13 +641,21 @@ string Combat::DoCombat() {
 
         int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
         Defender->TakeDamage(Damage);
-        Result += Defender->GetName() + " took " + to_string( Damage) + " from an attack from " + Attacker->GetName() + "\n";
         DrawSlash(Defender->GetXPos(), Defender->GetYPos());
+        if (Defender->GetHealth() >= 1) {
+            GameInProgress->AddUpdate(Defender->GetName() + " took " + to_string(Damage) + " damage from an attack from " + Attacker->GetName());
+            Result += Defender->GetName() + " took " + to_string(Damage) + " damage from an attack from " + Attacker->GetName() + "\n";
+        }
+        else {
+            GameInProgress->AddUpdate(Defender->GetName() + " took " + to_string(Damage) + " damage from an attack from " + Attacker->GetName()+" and has fallen in battle");
+            Result += Defender->GetName() + " took " + to_string(Damage) + " damage from an attack from " + Attacker->GetName() + " and has fallen in battle";
+        }
         SDL_Delay(50);
         DrawSlash(-1, -1);
         SDL_Delay(50);
     }
     else {
+        GameInProgress->AddUpdate(Defender->GetName() + " dodges attack from " + Attacker->GetName());
         Result += Defender->GetName() + " dodges attack from " + Attacker->GetName()+"\n";
     }
     if (Defender->GetHealth() > 0 ) {
@@ -645,27 +664,44 @@ string Combat::DoCombat() {
 
                 int Damage = GetDamage(Defender->GetWeapon()->GetStrength(), Attacker->GetDefence());
                 Attacker->TakeDamage(Damage);
-                Result += Defender->GetName() + " Counters for " + to_string(Damage) + " damage \n";
+                if (Attacker->GetHealth() < 1) {
+                    GameInProgress->AddUpdate(Defender->GetName() + " Counters for " + to_string(Damage) + " damage, "+Attacker->GetName()+" has fallen in battle!");
+                    Result += Defender->GetName() + " Counters for " + to_string(Damage) + " damage," + Attacker->GetName() + " has fallen in battle! \n";
+                }
+                else {
+                    GameInProgress->AddUpdate(Defender->GetName() + " Counters for " + to_string(Damage) + " damage");
+                    Result += Defender->GetName() + " Counters for " + to_string(Damage) + " damage\n";
+                }
                 DrawSlash(Attacker->GetXPos(), Attacker->GetYPos());
                 SDL_Delay(50);
                 DrawSlash(-1, -1);
                 SDL_Delay(50);
             }
             else {
+                GameInProgress->AddUpdate(Attacker->GetName() + " dodges attack from " + Defender->GetName());
                 Result += Attacker->GetName() + " dodges attack from " + Defender->GetName() + "\n";
             }
         }
         else {
+            GameInProgress->AddUpdate(Defender->GetName() + " cant counter due to being out of range ");
             Result += Defender->GetName() + " cant counter due to being out of range \n";
         }
         
     }
-    if (Attacker->GetHealth() > 0 && AttackerSpeed>Defender->GetSwiftness()+5) {
-        Result += Attacker->GetName() + " gets attempts a vantage attack \n";
+    if (Attacker->GetHealth() > 0 && AttackerSpeed>Defender->GetSwiftness()+5 && Defender->GetHealth()>0) {
+        Result += Attacker->GetName() + " gets to attempt a vantage attack \n";
         if (GetIfHits(Attacker->GetDexterity(), Defender->GetSwiftness())) {
 
             int Damage = GetDamage(Attacker->GetWeapon()->GetStrength(), Defender->GetDefence());
             Defender->TakeDamage(Damage);
+            if (Defender->GetHealth() < 1) {
+                GameInProgress->AddUpdate(Defender->GetName() + " took " + to_string(Damage)+" from a vantage attack and has fallen in battle");
+                Result += Defender->GetName() + " took " + to_string(Damage) + " damage from a advantage attack and has fallen in battle"+ "\n";
+            }
+            else {
+                GameInProgress->AddUpdate(Defender->GetName() + " took " + to_string(Damage) + " damage from a vantage attack " );
+                Result += Defender->GetName() + " took " + to_string(Damage) + " damage from an advantage attack from " + Attacker->GetName() ;
+            }
             Result += Defender->GetName() + " took " + to_string(Damage) + "\n";
             DrawSlash(Defender->GetXPos(), Defender->GetYPos());
             SDL_Delay(50);
@@ -673,6 +709,7 @@ string Combat::DoCombat() {
             SDL_Delay(50);
         }
         else {
+            GameInProgress->AddUpdate(Defender->GetName() +" has dodged the advantage attack");
             Result += Defender->GetName() + " dodges the attack " + "\n";
 
         }
@@ -1046,10 +1083,10 @@ void DrawEnemySelected() {
     }
 }
 void DrawUpdateBox() {
-    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = ((WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2 + (SquareSize * GameMap.GetHeight())) + 10;
+    int GridStartX = ((WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2)-200; int GridStartY = ((WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2 + (SquareSize * GameMap.GetHeight())) + 5;
     SDL_SetRenderDrawColor(App.renderer, 120, 230, 180, 255);
     SDL_FRect BackGround, GridSquare;
-    BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize; BackGround.h = 125;
+    BackGround.x = GridStartX; BackGround.y = GridStartY; BackGround.w = GameMap.GetWidth() * SquareSize+400; BackGround.h = 155;
     SDL_RenderFillRect(App.renderer, &BackGround);
 }
 void DrawCurrentlySelected() {
@@ -1101,12 +1138,25 @@ void RenderText() {
     StatusRect.x = WINDOW_WIDTH/2-(StatusTexture->w/2); StatusRect.y = 100 ; StatusRect.h = StatusSurface->h; StatusRect.w = StatusSurface->w;
     SDL_RenderTexture(App.renderer, StatusTexture, nullptr, &StatusRect);
 }
+void RenderUpdatesTexts() {
+    vector<string>Updates = GameInProgress->GetUpdates();
+    int GridStartX = (WINDOW_WIDTH - (GameMap.GetWidth() * SquareSize)) / 2; int GridStartY = ((WINDOW_HEIGHT - ((GameMap.GetHeight() * SquareSize))) / 2 + (SquareSize * GameMap.GetHeight())) + 10;
+    SDL_Color TextColour = { 255,255,255 };
+    for (int i = 0; i < Updates.size(); i++) {
+        SDL_Surface* InfoSurface = TTF_RenderText_Blended(font, Updates[i].c_str(), Updates[i].size(), TextColour);
+        SDL_Texture* InfoTexture = SDL_CreateTextureFromSurface(App.renderer, InfoSurface);
+        SDL_FRect InfoRect;
+        InfoRect.x = GridStartX; InfoRect.y = GridStartY+(i*InfoSurface->h); InfoRect.h = InfoSurface->h; InfoRect.w = InfoSurface->w;
+        SDL_RenderTexture(App.renderer, InfoTexture, nullptr, &InfoRect);
+    }
+}
 void DrawGameScreenTemp() {
     SDL_SetRenderDrawColor(App.renderer, 119, 136, 153, 180);
     SDL_RenderClear(App.renderer);
     DrawCurrentlySelected();
     DrawEnemySelected();
     DrawUpdateBox();
+    RenderUpdatesTexts();
     if (GameInProgress->GetCurrentlySelected() == nullptr) {
         DrawGrid();
     }
@@ -1167,10 +1217,10 @@ bool CreateApp() {
 }
 
 bool CreateGame() {
-    if ((App.window = SDL_CreateWindow("GameScreen",WINDOW_WIDTH, WINDOW_HEIGHT, 0)) == nullptr) {
-        SDL_Quit();
-        return false;
-    }
+   // if ((App.window = SDL_CreateWindow("GameScreen",WINDOW_WIDTH, WINDOW_HEIGHT, 0)) == nullptr) {
+     //   SDL_Quit();
+       // return false;
+    //}
     if ((App.window = SDL_CreateWindow("Grid", WINDOW_WIDTH, WINDOW_HEIGHT, 0)) == nullptr) {
         SDL_Quit();
         return false;
@@ -1317,6 +1367,140 @@ vector<int> GetPosClicked(int MouseX,int MouseY) {
     return Pos;
 
 }
+void  PlayGame() {
+    float MouseX = 0; float MouseY = 0;
+    CreateGame();
+    GameMap = Map(24, 24, UnitsInPlay, 4);
+    MoveDone = false;
+    GameInProgress = new Game("Player1", "Player2");
+    GameInProgress->SetCurrentlySelected(nullptr);
+    Unit Temp = Unit("", 0, 0, 0, 0, 0, 0, "", "");
+    if (App.GameStart) {
+        App.IsRunning = true;
+        while (App.IsRunning)
+        {
+            GameInProgress->IncrementFrameCount();
+            while (SDL_PollEvent(&App.event)) {
+                switch (App.event.type) {
+                case SDL_EVENT_QUIT:
+                    App.IsRunning = false;
+                    break;
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                    MouseX = App.event.button.x; MouseY = App.event.button.y;
+                    SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
+                    cout << "Move done: " << MoveDone << " \n";
+                    cout << "Currently selected: " << GameInProgress->GetCurrentlySelected() << " \n";
+
+
+                    if (GameInProgress->GetCurrentlySelected() != nullptr) {
+                        vector<int> Move = CheckIfMoveOptionClicked(MouseX, MouseY);
+                        if (MoveDone) {
+                            //check for selection of attack
+                            vector<int> PosClicked = GetPosClicked(MouseX, MouseY);
+                            vector<vector<int>> Attacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
+                            for (int i = 0; i < Attacks.size(); i++) {
+                                cout << " Attacks: " << Attacks[i].size();
+                                cout << "  \nPosClicked: " << PosClicked.size() << " \n";
+                                if (PosClicked[0] == Attacks[i][0] && PosClicked[1] == Attacks[i][1]) {
+                                    cout << "Enemy clicked" << "\n ";
+                                    cout << "Currently selected before combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
+                                    Unit* Enemy = GameMap.GetUnitInPos(PosClicked[0], PosClicked[1]);
+                                    cout << "Combat: " << GameInProgress->GetCurrentlySelected()->GetName() << " VS " << Enemy->GetName() << "\n";
+                                    Combat CurrentCombat(GameInProgress->GetCurrentlySelected(), Enemy);
+                                    string Combatresult = CurrentCombat.DoCombat();
+                                    cout << Combatresult << "\n";
+
+                                    cout << "Currently selected after combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
+
+                                    GameInProgress->SetCurrentlySelected(nullptr);
+                                    UpdateNeeded = true;
+                                    MoveDone = false;
+                                    GameMap.CheckForDefeated();
+                                    bool Victory = GameMap.CheckForEndOfGame();
+                                    if (Victory) {
+                                        App.IsRunning = false;
+                                    }
+
+                                }
+                            }
+
+                        }
+                        else {
+                            if (Move[0] != -1) {
+                                GameInProgress->GetCurrentlySelected()->UpdatePosition(Move[0], Move[1]);
+                                GameInProgress->GetCurrentlySelected()->SetUsed(true);
+                                GameMap.MoveUnit(Move, GameInProgress->GetCurrentlySelectedPos(), GameInProgress->GetCurrentlySelected());
+
+
+                                //cout<<"Weapon" <<GameInProgress->GetCurrentlySelected()->GetWeapon()<<"\n";
+                                GameInProgress->GetCurrentlySelected()->CalculatePossibleAttacks();
+                                if (!GameInProgress->GetCurrentlySelected()->GetCurrentAttacks().size() == 0) {
+                                    UpdateNeeded = true;
+                                    MoveDone = true;
+                                }
+                                else {
+                                    GameInProgress->SetCurrentlySelected(nullptr);
+                                    UpdateNeeded = true;
+                                    MoveDone = false;
+                                }
+                                GameInProgress->SetCurrentlySelectedEnemy(nullptr);
+                                GameInProgress->SwapPlayers();
+                                if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                                    GameInProgress->SwapPlayers();
+                                    if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                                        GameInProgress->SwapPlayers();
+                                        GameInProgress->UpdateTurn();
+                                        GameMap.SetAllUnitsToUnactivated();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
+                        cout << "Else statement \n";
+                        cout << " Temp: " << Temp << " \n";
+                        cout << "Current team:" << GameInProgress->GetCurrentPlayer() << "\n";
+                        if (Temp != nullptr) {
+                            SDL_Log("Clicked unit!");
+                            cout << " Unit team: " << Temp->GetTeam() << " \n";
+                            cout << " Unit used: " << Temp->GetIfUsedThisTurn() << " \n";
+                            if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn() && !MoveDone) {
+                                SDL_Log("Player Clicked their Unit");
+                                Temp->CalculateCurrentMoves();
+                                GameInProgress->SetCurrentlySelected(Temp);
+                                UpdateNeeded = true;
+                            }
+                            else if ((Temp->GetTeam() != GameInProgress->GetCurrentPlayer())) {
+                                SDL_Log("Enemy Unit clicked");
+                                GameInProgress->SetCurrentlySelectedEnemy(Temp);
+                                UpdateNeeded = true;
+                            }
+                        }
+                    }
+                    break;
+                case SDL_EVENT_KEY_DOWN:
+                    switch (App.event.key.key)
+                    {
+                    case SDLK_ESCAPE:
+                        App.IsRunning = false;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            SDL_RenderClear(App.renderer);
+            if (UpdateNeeded) {
+                DrawGameScreenTemp();
+                SDL_RenderPresent(App.renderer);
+                UpdateNeeded = false;
+            }
+            SDL_Delay(10);
+        }
+    }
+
+}
 
 
 int main()
@@ -1412,136 +1596,7 @@ int main()
             }
         }
     }
-    CreateGame();
-    GameMap = Map(24, 24, UnitsInPlay, 4);
-    MoveDone = false;
-    GameInProgress = new Game("Player1", "Player2");
-    GameInProgress->SetCurrentlySelected(nullptr);
-    Unit Temp=Unit("",0,0,0,0,0,0,"","");
-    if (App.GameStart) {
-        App.IsRunning = true;
-        while (App.IsRunning)
-        {
-            GameInProgress->IncrementFrameCount();
-            while (SDL_PollEvent(&App.event)) {
-                switch (App.event.type) {
-                case SDL_EVENT_QUIT:
-                    App.IsRunning = false;
-                    break;
-                case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    MouseX = App.event.button.x; MouseY = App.event.button.y;
-                    SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
-                    cout << "Move done: " << MoveDone << " \n";
-                    cout << "Currently selected: " << GameInProgress->GetCurrentlySelected() << " \n";
-
-
-                    if (GameInProgress->GetCurrentlySelected() != nullptr) {
-                        vector<int> Move = CheckIfMoveOptionClicked(MouseX, MouseY);
-                        if (MoveDone) {
-                            //check for selection of attack
-                            vector<int> PosClicked = GetPosClicked(MouseX, MouseY);
-                            vector<vector<int>> Attacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
-                            for (int i = 0; i <Attacks.size(); i++) {
-                                cout << " Attacks: " << Attacks[i].size();
-                                cout << "  \nPosClicked: " << PosClicked.size()<<" \n";
-                                if (PosClicked[0] == Attacks[i][0] && PosClicked[1] == Attacks[i][1]) {
-                                    cout << "Enemy clicked"<<"\n ";
-                                    cout << "Currently selected before combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
-                                    Unit* Enemy = GameMap.GetUnitInPos(PosClicked[0], PosClicked[1]);
-                                    cout << "Combat: " << GameInProgress->GetCurrentlySelected()->GetName() << " VS " << Enemy->GetName() << "\n";
-                                    Combat CurrentCombat(GameInProgress->GetCurrentlySelected(), Enemy);
-                                    string Combatresult = CurrentCombat.DoCombat();
-                                    cout << Combatresult<<"\n";
-                                    
-                                    cout << "Currently selected after combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
-
-                                    GameInProgress->SetCurrentlySelected(nullptr);
-                                    UpdateNeeded = true;
-                                    MoveDone = false;
-                                    GameMap.CheckForDefeated();
-                                    bool Victory = GameMap.CheckForEndOfGame();
-                                    if (Victory) {
-                                        App.IsRunning = false;
-                                    }
-
-                                }
-                            }
-
-                        }
-                        else {
-                            if (Move[0] != -1) {
-                                GameInProgress->GetCurrentlySelected()->UpdatePosition(Move[0], Move[1]);
-                                GameInProgress->GetCurrentlySelected()->SetUsed(true);
-                                GameMap.MoveUnit(Move, GameInProgress->GetCurrentlySelectedPos(), GameInProgress->GetCurrentlySelected());
-
-
-                                //cout<<"Weapon" <<GameInProgress->GetCurrentlySelected()->GetWeapon()<<"\n";
-                                GameInProgress->GetCurrentlySelected()->CalculatePossibleAttacks();
-                                if (!GameInProgress->GetCurrentlySelected()->GetCurrentAttacks().size() == 0) {
-                                    UpdateNeeded = true;
-                                    MoveDone = true;
-                                }
-                                else{
-                                    GameInProgress->SetCurrentlySelected(nullptr);
-                                    UpdateNeeded = true;
-                                    MoveDone = false;
-                                }
-                                GameInProgress->SetCurrentlySelectedEnemy(nullptr);
-                                GameInProgress->SwapPlayers();
-                                if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
-                                    GameInProgress->SwapPlayers();
-                                    if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
-                                        GameInProgress->SwapPlayers();
-                                        GameInProgress->UpdateTurn();
-                                        GameMap.SetAllUnitsToUnactivated();
-                                    }
-                                }
-                            }
-                        }             
-                    }
-                    else {
-                        Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
-                        cout << "Else statement \n";
-                        cout << " Temp: " << Temp<<" \n";
-                        cout << "Current team:" << GameInProgress->GetCurrentPlayer()<<"\n";
-                        if (Temp!=nullptr ) {
-                            SDL_Log("Clicked unit!");
-                            cout << " Unit team: " << Temp->GetTeam() << " \n";
-                            cout << " Unit used: " << Temp->GetIfUsedThisTurn() << " \n";
-                            if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn() && !MoveDone) {
-                                SDL_Log("Player Clicked their Unit");
-                                Temp->CalculateCurrentMoves();
-                                GameInProgress->SetCurrentlySelected(Temp);
-                                UpdateNeeded = true;
-                            }
-                            else if ((Temp->GetTeam() != GameInProgress->GetCurrentPlayer())) {
-                                SDL_Log("Enemy Unit clicked");
-                                GameInProgress->SetCurrentlySelectedEnemy(Temp);
-                                UpdateNeeded = true;
-                            }
-                        }
-                    }
-                    break;
-                case SDL_EVENT_KEY_DOWN:
-                    switch (App.event.key.key)
-                    {
-                    case SDLK_ESCAPE:
-                        App.IsRunning = false;
-                        break;
-                    default:
-                        break;
-                    }
-                }
-            }
-            SDL_RenderClear(App.renderer);
-            if (UpdateNeeded) {
-                DrawGameScreenTemp();
-                SDL_RenderPresent(App.renderer);
-                UpdateNeeded = false;
-            }
-            SDL_Delay(10);
-        }  
-    }
+    PlayGame();
 
     cout << " Game over\n";
     cout << "Team " << GameMap.GetVictor()<< "won! \n";

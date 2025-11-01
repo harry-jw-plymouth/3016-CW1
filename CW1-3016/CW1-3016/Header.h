@@ -152,8 +152,8 @@ public:
 	void SwapPlayers();
 	int GetFrameCount();
 	void IncrementFrameCount();
-
-
+	vector<string> GetUpdates();
+	void AddUpdate(string New);
 private:
 	Unit* CurrentlySelected;
 	Unit* CurrentEnemy;
@@ -164,6 +164,7 @@ private:
 	int CurrentlySelectedX;
 	int CurrentlySelectedY;
 	int FrameCount;
+	vector<string>Updates;
 };
 
 
