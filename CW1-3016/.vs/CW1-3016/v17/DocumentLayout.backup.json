@@ -20,9 +20,6 @@
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector||{3B902123-F8A7-4915-9F01-361F908088D0}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C0E0CA57-BF93-4C74-A643-F0D50BF18B6F}|CW1-3016\\CW1-3016.vcxproj|C:\\SDL3_IMAGE-3.2.4\\INCLUDE\\SDL3_IMAGE\\SDL_IMAGE.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
@@ -30,6 +27,9 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\vector||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\SDL3_image-3.2.4\\include\\SDL3_image\\SDL_image.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -51,8 +51,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\xstring",
               "ViewState": "AgIAALgBAAAAAAAAAAASwMQBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-10-30T22:47:58.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T22:47:58.591Z"
             },
             {
               "$type": "Document",
@@ -62,7 +61,7 @@
               "RelativeDocumentMoniker": "CW1-3016\\CW1-3016.cpp",
               "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
               "RelativeToolTip": "CW1-3016\\CW1-3016.cpp",
-              "ViewState": "AgIAAHUGAAAAAAAAAADwv3wGAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAFQGAAAAAAAAAAAYwGgGAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-10T16:38:27.694Z",
               "EditorCaption": ""
@@ -77,8 +76,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\__msvc_string_view.hpp",
               "ViewState": "AgIAAGoAAAAAAAAAAAAwwIYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-10-27T15:54:37.344Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-27T15:54:37.344Z"
             },
             {
               "$type": "Document",
@@ -90,12 +88,11 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector",
               "ViewState": "AgIAAHwHAAAAAAAAAAAEwIkHAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-10-29T14:03:39.871Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-29T14:03:39.871Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "xmemory",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
@@ -106,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "vector",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\vector",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\vector",
@@ -117,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "xstring",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstring",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstring",
@@ -128,7 +125,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "SDL_image.h",
               "DocumentMoniker": "C:\\SDL3_image-3.2.4\\include\\SDL3_image\\SDL_image.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\SDL3_image-3.2.4\\include\\SDL3_image\\SDL_image.h",
@@ -136,8 +133,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\SDL3_image-3.2.4\\include\\SDL3_image\\SDL_image.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-10-16T13:27:07.483Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-16T13:27:07.483Z"
             }
           ]
         },
@@ -153,7 +149,7 @@
               "RelativeDocumentMoniker": "CW1-3016\\Header.h",
               "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\Header.h",
               "RelativeToolTip": "CW1-3016\\Header.h",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAkwFsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAADwv1sAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-10-10T16:38:28.718Z",
               "EditorCaption": ""
