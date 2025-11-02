@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\SDL3-3.2.22\include;C:\SDL3_image-3.2.4\include\SDL3_image;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\SDL3-3.2.22\lib\x64;C:\SDL3_image-3.2.4\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3-3.2.22\include;C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3_image-3.2.4\include\SDL3_image;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3-3.2.22\lib\x64;C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3_image-3.2.4\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,13 +108,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SDL3_ttf-3.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3_ttf-3.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\SDL3_ttf-3.2.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\SDL3_ttf-3.2.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
