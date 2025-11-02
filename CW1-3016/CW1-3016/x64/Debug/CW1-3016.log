@@ -123,16 +123,16 @@ C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp
 C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1287,80): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1287,105): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1293,15): warning C4101: 'OptionSquare': unreferenced local variable
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1398,77): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1398,69): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1401,76): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1401,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1462,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1462,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1588,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1588,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1643,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1648,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1401,77): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1401,69): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1404,76): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1404,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1465,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1465,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1591,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1591,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1646,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1651,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(725,1): warning C4715: 'Combat::DoCombat': not all control paths return a value
-C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1653,1): warning C4715: 'CreateFonts': not all control paths return a value
+C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\CW1-3016\CW1-3016.cpp(1656,1): warning C4715: 'CreateFonts': not all control paths return a value
   CW1-3016.vcxproj -> C:\Uni stuff\Year 3\Comp 3016\CourseWork\3016-CW1\CW1-3016\x64\Debug\CW1-3016.exe

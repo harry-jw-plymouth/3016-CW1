@@ -1380,6 +1380,9 @@ void  PlayGame() {
         App.IsRunning = true;
         while (App.IsRunning)
         {
+            if (GameMap.GetIfAllPlayersUnitsUsedThisTurn(GameInProgress->GetCurrentPlayer())) {
+                GameInProgress->SwapPlayers();
+            }
             GameInProgress->IncrementFrameCount();
             while (SDL_PollEvent(&App.event)) {
                 switch (App.event.type) {
