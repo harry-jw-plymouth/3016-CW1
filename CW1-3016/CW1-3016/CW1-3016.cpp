@@ -1367,9 +1367,10 @@ vector<int> GetPosClicked(int MouseX,int MouseY) {
     return Pos;
 
 }
+bool Playing = true;
 void  PlayGame() {
     float MouseX = 0; float MouseY = 0;
-    CreateGame();
+   // CreateGame();
     GameMap = Map(24, 24, UnitsInPlay, 4);
     MoveDone = false;
     GameInProgress = new Game("Player1", "Player2");
@@ -1384,6 +1385,7 @@ void  PlayGame() {
                 switch (App.event.type) {
                 case SDL_EVENT_QUIT:
                     App.IsRunning = false;
+                    Playing = false;
                     break;
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
@@ -1501,37 +1503,40 @@ void  PlayGame() {
     }
 
 }
-
-
-int main()
-{  
-    if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == 0) {
-        return -1;
+void CreateEndScreen() {
+    if ((App.window = SDL_CreateWindow("Results", TITLE_WINDOW_WIDTH, TITLE_WINDOW_HEIGHT, 0)) == nullptr) {
+        SDL_Quit();
     }
-    if (!CreateApp()) {
-        SDL_Log("Game could not run");
-        return 2;
+    if ((App.renderer = SDL_CreateRenderer(App.window, nullptr)) == nullptr) {
     }
-    SDL_Init(SDL_INIT_VIDEO);
-    TTF_Init();
-
-    font = TTF_OpenFont("arial.ttf", FONT_SIZE);
-    if (!font) {
-        SDL_Log("Failed to load font: %s",SDL_GetError());
-        return 1;
+}
+bool DoEndScreen() {
+    CreateEndScreen();
+    string VictoryPath = string(SDL_GetBasePath()) + "assets/BlueVictoryScreen.png";
+    if (GameMap.GetVictor() == 0) {
+        VictoryPath = string(SDL_GetBasePath()) + "assets/BlueVictoryScreen.png";
     }
-    TitleFont = TTF_OpenFont("arial.ttf", TITLEFONT_SIZE);
-    if (!font) {
-        SDL_Log("Failed to load font: %s", SDL_GetError());
-        return 1;
+    else {
+        VictoryPath = string(SDL_GetBasePath()) + "assets/RedVictoryScreen.png";
     }
-
-    bool Drawn = false;
-    CreateWeapons();
-    SDL_Color color = { 255, 255, 255 };
-    while (App.IsRunning) 
-    {
+    SDL_RenderClear(App.renderer);
+    
+    SDL_FRect EndImage;
+    EndImage.x = 0; EndImage.y = 0; EndImage.h = TITLE_WINDOW_HEIGHT; EndImage.w = TITLE_WINDOW_WIDTH;
+    SDL_SetRenderDrawColor(App.renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_Texture* SpriteTexture = IMG_LoadTexture(App.renderer, VictoryPath.c_str());
+    if (!SpriteTexture) {
+        SDL_Log("Failed to load texture: %s \n", SDL_GetError());
+    }
+    SDL_RenderTexture(App.renderer, SpriteTexture, nullptr, &EndImage);
+    bool PlayAgain = false;
+    bool EndScreenActive = true;
+    SDL_RenderPresent(App.renderer);
+    while (EndScreenActive) {
         while (SDL_PollEvent(&App.event)) {
+            if (App.event.type == SDL_EVENT_QUIT) {
+                App.IsRunning = false;
+            }
             switch (App.event.type) {
             case SDL_EVENT_QUIT:
                 App.IsRunning = false;
@@ -1540,7 +1545,81 @@ int main()
                 switch (App.event.key.key)
                 {
                 case SDLK_ESCAPE:
-                    App.IsRunning= false;
+                    EndScreenActive = false;
+                    break;
+                case SDLK_RETURN:
+                    PlayAgain = true;
+                    EndScreenActive = false;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+
+    }
+    return PlayAgain;
+    
+
+}
+void DisplayOptionsScreen() {
+    float MouseX = 0; float MouseY = 0;
+    bool Drawn = false;
+    //SetOptionsPos();
+    if (App.GameStart) {
+        App.IsRunning = true;
+        while (App.IsRunning)
+        {
+            SDL_RenderClear(App.renderer);
+            if (!Drawn) {
+                DrawSelectScreen();
+                SDL_RenderPresent(App.renderer);
+                Drawn = true;
+            }
+            SDL_Delay(10);
+            while (SDL_PollEvent(&App.event)) {
+                switch (App.event.type) {
+                case SDL_EVENT_QUIT:
+                    App.IsRunning = false;
+                    Playing = false;
+                    break;
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                    MouseX = App.event.button.x; MouseY = App.event.button.y;
+                    CheckIfOptionsClicked(MouseX, MouseY);
+                    break;
+                case SDL_EVENT_KEY_DOWN:
+                    switch (App.event.key.key)
+                    {
+                    case SDLK_ESCAPE:
+                        App.IsRunning = false;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+}
+void DoTitleScreen() {
+    bool Drawn = false;
+    bool Close = false;
+    SDL_Color color = { 255, 255, 255 };
+    while (App.IsRunning)
+    {
+        while (SDL_PollEvent(&App.event)) {
+            switch (App.event.type) {
+            case SDL_EVENT_QUIT:
+                App.IsRunning = false;
+                Playing = false;
+                Close = true;
+                break;
+            case SDL_EVENT_KEY_DOWN:
+                switch (App.event.key.key)
+                {
+                case SDLK_ESCAPE:
+                    App.IsRunning = false;
                     break;
                 case SDLK_RETURN:
                     App.GameStart = true;
@@ -1559,45 +1638,58 @@ int main()
         SDL_Delay(10);
 
     }
-    SDL_RenderClear(App.renderer);
-    float MouseX = 0; float MouseY = 0;
-    Drawn = false;
+}
+bool CreateFonts() {
+    font = TTF_OpenFont("arial.ttf", FONT_SIZE);
+    if (!font) {
+        SDL_Log("Failed to load font: %s", SDL_GetError());
+        return 1;
+    }
+    TitleFont = TTF_OpenFont("arial.ttf", TITLEFONT_SIZE);
+    if (!font) {
+        SDL_Log("Failed to load font: %s", SDL_GetError());
+        return 1;
+    }
+}
+int main()
+{  
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == 0) {
+        return -1;
+    }
+    if (!CreateApp()) {
+        SDL_Log("Game could not run");
+        return 2;
+    }
+    SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+    CreateFonts();   
+   
+    bool Close = false;
+    bool Drawn = false;
+
     SetOptionsPos();
-    if (App.GameStart){
-        App.IsRunning = true;
-        while (App.IsRunning)
-        {
-            SDL_RenderClear(App.renderer);
-            if (!Drawn) {
-                DrawSelectScreen();
-                SDL_RenderPresent(App.renderer);
-                Drawn = true;
-            }   
-            SDL_Delay(10);
-            while (SDL_PollEvent(&App.event)) {
-                switch (App.event.type) {
-                case SDL_EVENT_QUIT:
-                    App.IsRunning = false;
-                    break;
-                case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    MouseX = App.event.button.x; MouseY = App.event.button.y;
-                    CheckIfOptionsClicked(MouseX, MouseY);
-                    break;
-                case SDL_EVENT_KEY_DOWN:
-                    switch (App.event.key.key)
-                    {
-                    case SDLK_ESCAPE:
-                        App.IsRunning = false;
-                        break;                    
-                    default:
-                        break;
-                    }
-                }
-            }
+    
+    DoTitleScreen();
+    SDL_RenderClear(App.renderer);
+
+    while (Playing ) {
+        DisplayOptionsScreen();
+        SDL_DestroyWindow(App.window);
+        if (Playing) {
+            UpdateNeeded = true;
+            CreateGame();
+            PlayGame();
+        }
+        SDL_RenderClear(App.renderer);
+        SDL_DestroyWindow(App.window);
+        if (Playing) {
+            Playing = DoEndScreen();
+            SDL_DestroyWindow(App.window);
+        }
+        if (Playing) {
+            CreateApp();
         }
     }
-    PlayGame();
-
     cout << " Game over\n";
     cout << "Team " << GameMap.GetVictor()<< "won! \n";
     std::cout << "Game Shut down!\n";
