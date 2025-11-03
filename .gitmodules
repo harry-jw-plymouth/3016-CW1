@@ -1,0 +1,9 @@
+[submodule "CW1-3016/CW1-3016/SDL"]
+	path = CW1-3016/CW1-3016/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "CW1-3016/CW1-3016/SDL_image"]
+	path = CW1-3016/CW1-3016/SDL_image
+	url = https://github.com/libsdl-org/SDL_image
+[submodule "CW1-3016/CW1-3016/SDL_ttf"]
+	path = CW1-3016/CW1-3016/SDL_ttf
+	url = https://github.com/libsdl-org/SDL_ttf

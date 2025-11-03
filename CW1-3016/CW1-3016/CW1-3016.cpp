@@ -1,5 +1,24 @@
 // CW1-3016.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+//1.Open project properties and select VC++ Directories 
+//2.Select VC++ Directories and open include Directories
+//3.Click the 3 dots at the end of the first include path
+//4.Navigate to the repository, select SDL3 - 3.2.22 and then select include then click select folder(File path should be(Repository path)\SDL3 - 3.2.22\include)
+//5,Click the 3 dots on the second include path, navigate to the repository, click SDL_image - 3.2.4 then include SDL3 then click select folder(File path should be(Repository path)\SDL3_image - 3.2.4\include\SDL3)
+//6.Click ok
+//7.Open Library directories
+//8.On the first path click the 3 dots and navigate to the repository, then SDL3 - 2.22 then lib then x64.Once navigated here click select folder(Path should be : Repository path\SDL3.3.2.22\lib\x64)
+//9.On the second path click the 3 dots, navigate to the repository, click SDL3_image - 3.2.4 then click lib then x64 then click select folder(path should be : Repository path\SDL3_image - 3.2.4\lib\x64)
+//10.Click ok then apply
+//11 Click C / C++, click general then open additional include directories.On the include path click the 3 dots and navigate to the repository, then SDL3_ttf - 3.2.2\include then select folder(Path should be : Repository: SDL3_ttf - 3.2.2\include) then click ok
+//12 Click C / C++ all options then open additional include directories.On the include path click the 3 dots and navigate to the repository, then SDL3_ttf - 3.2.2\include then select folder(Path should be : Repository: SDL3_ttf - 3.2.2\include) then click ok
+//13Open linker then click general then open additional library directories.Click the 3 dots on the path and open repository path, then SDL3_ttf - 3.2.2 then lib then x64 then click ok(final path should be : Repository path\SDL3_ttf - 3.2.2\lib\x64
+//14    Open linker, then input and open additional dependencies and add:
+ //SDL3.lib
+ //SDL3_ttf.lib
+// SDL3_image.lib
+//15.Click ok then click system, set subsystem to Console(/ SUBSYSTEM:CONSOLE) then click apply
+
 
 #include <iostream>
 using namespace std;
@@ -26,13 +45,13 @@ int Weapon::GetRange() {
     return Range;
 }
 Spear:: Spear(string Name, int Range, int Strength) :Weapon(Name, Range, Strength) {
-    cout << "Making spear\n";
+    //cout << "Making spear\n";
 }
 Sword::Sword(string Name, int Range, int Strength):Weapon(Name,Range,Strength) {
-    cout << "Making sword\n";
+   // cout << "Making sword\n";
 }
 Bow::Bow(string Name, int Range, int Strength) :Weapon(Name, Range, Strength) {
-    cout << "Making bow \n";
+ //   cout << "Making bow \n";
 }
 
 
@@ -121,7 +140,7 @@ bool Game::GetIfAllUnitsActivatedThisTurn(vector<Unit*> Units) {
 }
 void Game::UpdateTurn() {
     Turn++;
-    cout << "\n Turn " << Turn << "\n";
+ //   cout << "\n Turn " << Turn << "\n";
 }
 void CreateWeapons() {
     Sword* IRon = new Sword("Iron sword", 1, 5);
@@ -282,7 +301,7 @@ vector<vector<int>> Map::GetStartingPositions(int StartY, int EndY,int NoOfUnits
             RandomX = PositionsX(gen); RandomY = PositionsY(gen);
         }
         StartingPos.push_back({ RandomX, RandomY });
-        cout << "Pushing: " << RandomX<<"," << RandomY;
+       // cout << "Pushing: " << RandomX<<"," << RandomY;
     }
     return StartingPos;
 
@@ -443,7 +462,7 @@ vector<vector<int>> Unit::GetCurrentAttacks() {
 }
 void Unit::CalculatePossibleAttacks() {
     int XDifferance, YDifferance;
-    cout << "Calculating possible attacks" << "/n range of "+EquippedWeapon->GetName() + ":" << EquippedWeapon->GetRange() << "\n";
+//    cout << "Calculating possible attacks" << "/n range of "+EquippedWeapon->GetName() + ":" << EquippedWeapon->GetRange() << "\n";
 
     CurrentAttacks.clear();
     for (int y = 0; y < GameMap.GetHeight(); y++) {
@@ -466,7 +485,7 @@ void Unit::CalculatePossibleAttacks() {
                 if (GameMap.GetContentsOfGrid(x, y) != nullptr) {
                     if(GameMap.GetContentsOfGrid(x,y)->GetTeam()!=Team){
                         CurrentAttacks.push_back({ x,y });
-                        cout << "Adding:" << x << y << "\n";
+            //            cout << "Adding:" << x << y << "\n";
                     }                    
                 }
             }
@@ -628,7 +647,7 @@ int Combat::GetRange() {
         YDifference = Attacker->GetYPos() - Defender->GetYPos();
     }
     int Distance = XDifference + YDifference;
-    cout << "Range diff:" << Distance;
+  //  cout << "Range diff:" << Distance;
     return XDifference + YDifference;
 }
 string Combat::DoCombat() {
@@ -1393,8 +1412,8 @@ void  PlayGame() {
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
                     MouseX = App.event.button.x; MouseY = App.event.button.y;
                     SDL_Log("Mouse clicked at %f %f", MouseX, MouseY);
-                    cout << "Move done: " << MoveDone << " \n";
-                    cout << "Currently selected: " << GameInProgress->GetCurrentlySelected() << " \n";
+                   // cout << "Move done: " << MoveDone << " \n";
+                   // cout << "Currently selected: " << GameInProgress->GetCurrentlySelected() << " \n";
 
 
                     if (GameInProgress->GetCurrentlySelected() != nullptr) {
@@ -1404,18 +1423,18 @@ void  PlayGame() {
                             vector<int> PosClicked = GetPosClicked(MouseX, MouseY);
                             vector<vector<int>> Attacks = GameInProgress->GetCurrentlySelected()->GetCurrentAttacks();
                             for (int i = 0; i < Attacks.size(); i++) {
-                                cout << " Attacks: " << Attacks[i].size();
-                                cout << "  \nPosClicked: " << PosClicked.size() << " \n";
+                              //  cout << " Attacks: " << Attacks[i].size();
+                              //  cout << "  \nPosClicked: " << PosClicked.size() << " \n";
                                 if (PosClicked[0] == Attacks[i][0] && PosClicked[1] == Attacks[i][1]) {
-                                    cout << "Enemy clicked" << "\n ";
-                                    cout << "Currently selected before combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
+                                //    cout << "Enemy clicked" << "\n ";
+                                  //  cout << "Currently selected before combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
                                     Unit* Enemy = GameMap.GetUnitInPos(PosClicked[0], PosClicked[1]);
-                                    cout << "Combat: " << GameInProgress->GetCurrentlySelected()->GetName() << " VS " << Enemy->GetName() << "\n";
+                                  //  cout << "Combat: " << GameInProgress->GetCurrentlySelected()->GetName() << " VS " << Enemy->GetName() << "\n";
                                     Combat CurrentCombat(GameInProgress->GetCurrentlySelected(), Enemy);
                                     string Combatresult = CurrentCombat.DoCombat();
                                     cout << Combatresult << "\n";
 
-                                    cout << "Currently selected after combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
+                              //      cout << "Currently selected after combat : " << GameInProgress->GetCurrentlySelected()->GetHealth();
 
                                     GameInProgress->SetCurrentlySelected(nullptr);
                                     UpdateNeeded = true;
@@ -1463,21 +1482,21 @@ void  PlayGame() {
                     }
                     else {
                         Unit* Temp = GameMap.GetIfUnitClicked(MouseX, MouseY);
-                        cout << "Else statement \n";
-                        cout << " Temp: " << Temp << " \n";
-                        cout << "Current team:" << GameInProgress->GetCurrentPlayer() << "\n";
+                    //    cout << "Else statement \n";
+                    //    cout << " Temp: " << Temp << " \n";
+                    //    cout << "Current team:" << GameInProgress->GetCurrentPlayer() << "\n";
                         if (Temp != nullptr) {
-                            SDL_Log("Clicked unit!");
-                            cout << " Unit team: " << Temp->GetTeam() << " \n";
-                            cout << " Unit used: " << Temp->GetIfUsedThisTurn() << " \n";
+                     //       SDL_Log("Clicked unit!");
+                     //       cout << " Unit team: " << Temp->GetTeam() << " \n";
+                       //     cout << " Unit used: " << Temp->GetIfUsedThisTurn() << " \n";
                             if (Temp->GetTeam() == GameInProgress->GetCurrentPlayer() && !Temp->GetIfUsedThisTurn() && !MoveDone) {
-                                SDL_Log("Player Clicked their Unit");
+                           //     SDL_Log("Player Clicked their Unit");
                                 Temp->CalculateCurrentMoves();
                                 GameInProgress->SetCurrentlySelected(Temp);
                                 UpdateNeeded = true;
                             }
                             else if ((Temp->GetTeam() != GameInProgress->GetCurrentPlayer())) {
-                                SDL_Log("Enemy Unit clicked");
+                         //       SDL_Log("Enemy Unit clicked");
                                 GameInProgress->SetCurrentlySelectedEnemy(Temp);
                                 UpdateNeeded = true;
                             }
@@ -1660,7 +1679,7 @@ int main()
         return -1;
     }
     if (!CreateApp()) {
-        SDL_Log("Game could not run");
+        //SDL_Log("Game could not run");
         return 2;
     }
     SDL_Init(SDL_INIT_VIDEO);
