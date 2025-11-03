@@ -10,10 +10,10 @@ SDL image: https://github.com/libsdl-org/SDL_image
 SDL ttf:https://github.com/libsdl-org/SDL_ttf/releases
 
 Set up in visual studio: 
-1.Open project properties and select VC++ Directories 
-2.Select VC++ Directories and open include Directories 
-3.Click the 3 dots at the end of the first include path 
-4.Navigate to the repository, select SDL3-3.2.22 and then select include then click select folder (File path should be (Repository path)\SDL3-3.2.22\include)
+1. Open project properties and select VC++ Directories
+2. Select VC++ Directories and open include Directories
+3. Click the 3 dots at the end of the first include path
+4. Navigate to the repository, select SDL3-3.2.22 and then select include then click select folder (File path should be (Repository path)\SDL3-3.2.22\include)
 5.Click the 3 dots on the second include path, navigate to the repository, click SDL_image-3.2.4 then include SDL3 then click select folder(File path should be (Repository path)\SDL3_image-3.2.4\include\SDL3)
 6.Click ok 
 7.Open Library directories 
