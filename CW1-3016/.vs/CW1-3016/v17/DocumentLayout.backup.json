@@ -39,8 +39,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 368,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CW1-3016.cpp",
+              "DocumentMoniker": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
+              "RelativeDocumentMoniker": "CW1-3016\\CW1-3016.cpp",
+              "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
+              "RelativeToolTip": "CW1-3016\\CW1-3016.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-10-10T16:38:27.694Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -52,19 +65,6 @@
               "ViewState": "AgIAALgBAAAAAAAAAAASwMQBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-10-30T22:47:58.591Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CW1-3016.cpp",
-              "DocumentMoniker": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
-              "RelativeDocumentMoniker": "CW1-3016\\CW1-3016.cpp",
-              "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\CW1-3016.cpp",
-              "RelativeToolTip": "CW1-3016\\CW1-3016.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-10-10T16:38:27.694Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -149,7 +149,7 @@
               "RelativeDocumentMoniker": "CW1-3016\\Header.h",
               "ToolTip": "C:\\Uni stuff\\Year 3\\Comp 3016\\CourseWork\\3016-CW1\\CW1-3016\\CW1-3016\\Header.h",
               "RelativeToolTip": "CW1-3016\\Header.h",
-              "ViewState": "AgIAABkAAAAAAAAAADSQwFUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAANiWwFUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-10-10T16:38:28.718Z",
               "EditorCaption": ""
