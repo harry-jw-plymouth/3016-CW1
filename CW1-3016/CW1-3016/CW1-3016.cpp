@@ -1343,7 +1343,7 @@ void CheckIfOptionsClicked(int X,int Y) {
         if (X > OptionPos[i].x && X < OptionPos[i].x + OptionPos[i].w && Y> OptionPos[i].y && Y < OptionPos[i].y + OptionPos[i].h) {
         //    SDL_Log("Option %d clicked", i);
             if (i == 0) {
-                SDL_Log("Starting game");
+          //      SDL_Log("Starting game");
                 SDL_Log("Skirmish selected, 5 units a side");
                 App.IsRunning = false;
                 UnitsInPlay = 5;
